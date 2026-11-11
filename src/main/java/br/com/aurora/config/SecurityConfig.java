@@ -61,6 +61,11 @@ public class SecurityConfig {
                 // RF05: o Responsável também lança atendimentos (RF10) e precisa buscar o paciente
                 .requestMatchers(HttpMethod.GET, "/api/pacientes/**").hasAnyRole(OPERADOR, RESPONSAVEL)
                 .requestMatchers("/api/pacientes/**").hasRole(OPERADOR)
+                // RF07 e RF10
+                .requestMatchers("/api/atendimentos/**").hasAnyRole(OPERADOR, RESPONSAVEL)
+                // Situação da competência na barra superior: todos; o resto das competências: Responsável
+                .requestMatchers(HttpMethod.GET, "/api/competencias/situacao").authenticated()
+                .requestMatchers("/api/competencias/**", "/api/exportacoes/**").hasRole(RESPONSAVEL)
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().authenticated())
             .formLogin(f -> f
