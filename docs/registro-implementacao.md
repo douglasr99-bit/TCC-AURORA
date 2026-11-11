@@ -65,7 +65,7 @@ Este registro alimenta a seção 14 (Implementação) do TCC. Para cada módulo:
 
 **Conferência no navegador (11/11/2026):** fluxo completo feito pela interface, com dados fictícios: cadastro de profissional (CNS inválido recusado junto ao campo), procedimentos BPA-C e BPA-I; lançamento BPA-C sem idade (erro no campo) e salvo (competência 11/2026 criada ABERTA, barra superior atualizada); lançamento BPA-I com CNS de 14 dígitos (mensagem do wireframe), paciente sem cadastro (link para cadastrar), cadastro do paciente indígena sem etnia (erro no campo), volta ao lançamento com tudo restaurado, caráter obrigatório e salvamento; correção com quantidade 0 (recusada) e 5 (salva); consulta da competência. Prints em `docs/evidencias/incremento-2/`.
 
-**Testes do incremento 2:** 70 testes no total, todos passando (`docs/evidencias/incremento-2/testes.txt`): 12 de regras do lançamento e 7 de integração do lançamento no PostgreSQL de teste, além dos 51 do incremento 1.
+**Testes do incremento 2:** 70 testes no total (74 após a correção das sessões: T03b e 3 testes de serviço), todos passando (`docs/evidencias/incremento-2/testes.txt`): 12 de regras do lançamento e 7 de integração do lançamento no PostgreSQL de teste, além dos 51 do incremento 1.
 
 ## Desvios do projeto
 
@@ -88,7 +88,7 @@ Este registro alimenta a seção 14 (Implementação) do TCC. Para cada módulo:
 | 11/11/2026 | Na tela de lançamento, depois de salvar, data, profissional e procedimento ficam preenchidos. | Agiliza a digitação em sequência (vários pacientes do mesmo profissional no mesmo dia). | Pode ser citado na descrição da interface. |
 | 11/11/2026 | No BPA-I, a idade gravada no atendimento é calculada pela data de nascimento do paciente na data do atendimento; no BPA-C, é informada. | O layout do BPA-I também tem o campo idade; calcular evita digitação e divergência com o cadastro. | Citar na descrição do lançamento. |
 | 11/11/2026 | Ao ir do lançamento para "Cadastrar novo paciente", o lançamento em andamento é guardado no navegador (`sessionStorage`, só durante a sessão da aba) e restaurado na volta, com o paciente já buscado pelo CNS. | RF09: não perder o que foi digitado. Sem isso, o usuário redigitava data, profissional, procedimento e CID. | Pode ser citado na descrição da interface. |
-| 11/11/2026 | **Limitação:** perfis e situação do usuário são lidos no login. Mudança de perfil só vale no próximo login, e um usuário desativado continua com a sessão aberta até sair ou a sessão expirar (até 8 horas). | Comportamento padrão da autenticação por sessão do Spring Security. | Corrigir encerrando as sessões do usuário ao desativá-lo ou alterar seus perfis, ou citar nas Limitações. |
+| 11/11/2026 | Sessões registradas (`SessionRegistry`): ao desativar um usuário, alterar seus perfis ou trocar sua senha, as sessões abertas dele são encerradas na hora; a próxima ação leva ao login com o aviso "Seu acesso foi alterado pelo administrador. Entre novamente." | Sem isso, perfis e situação só eram lidos no login: um usuário desativado continuava usando o sistema até a sessão expirar (até 8 horas). Problema encontrado na conferência pela interface. | Citar na seção de Segurança (RNF04). Teste T03b. |
 
 ## Conferência do layout oficial (11/11/2026)
 
