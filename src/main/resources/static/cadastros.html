@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cadastros — Aurora</title>
+    <link rel="stylesheet" href="/css/base.css">
+</head>
+<body>
+<header id="barra"></header>
+<div class="estrutura">
+    <nav id="menu"></nav>
+    <main id="conteudo" class="conteudo">
+        <h1>Cadastros</h1>
+
+        <div role="tablist" aria-label="Cadastros">
+            <button type="button" role="tab" id="aba-usuarios" aria-controls="painel-usuarios" aria-selected="true">Usuários</button>
+            <button type="button" role="tab" id="aba-estabelecimento" aria-controls="painel-estabelecimento" aria-selected="false" tabindex="-1">Estabelecimento</button>
+            <button type="button" role="tab" id="aba-profissionais" aria-controls="painel-profissionais" aria-selected="false" tabindex="-1">Profissionais</button>
+            <button type="button" role="tab" id="aba-procedimentos" aria-controls="painel-procedimentos" aria-selected="false" tabindex="-1">Procedimentos</button>
+        </div>
+
+        <!-- RF02 -->
+        <section role="tabpanel" id="painel-usuarios" aria-labelledby="aba-usuarios" class="painel">
+            <h2>Usuários</h2>
+            <div class="mensagens" id="msg-usuarios" role="status" aria-live="polite"></div>
+            <div class="botoes" style="margin-bottom:1rem">
+                <button type="button" class="primario" data-novo="usuarios">Novo usuário</button>
+            </div>
+            <table>
+                <caption class="visualmente-oculto">Usuários do sistema</caption>
+                <thead><tr><th scope="col">Nome</th><th scope="col">Login</th><th scope="col">Perfis</th><th scope="col">Situação</th><th scope="col"><span class="visualmente-oculto">Ações</span></th></tr></thead>
+                <tbody id="lista-usuarios"></tbody>
+            </table>
+
+            <form id="form-usuarios" class="painel" novalidate hidden>
+                <h3 data-titulo>Novo usuário</h3>
+                <div class="mensagens" role="status" aria-live="polite" tabindex="-1"></div>
+                <input type="hidden" name="id">
+                <div class="grade">
+                    <div class="campo">
+                        <label for="usu-nome">Nome</label>
+                        <input type="text" id="usu-nome" name="nome" maxlength="100">
+                    </div>
+                    <div class="campo">
+                        <label for="usu-login">Login</label>
+                        <input type="text" id="usu-login" name="login" maxlength="50" autocomplete="off" autocapitalize="none">
+                    </div>
+                    <div class="campo">
+                        <label for="usu-senha">Senha</label>
+                        <input type="password" id="usu-senha" name="senha" maxlength="72" autocomplete="new-password">
+                        <span class="dica" id="dica-senha">Pelo menos 8 caracteres.</span>
+                    </div>
+                    <fieldset class="campo" id="usu-perfis">
+                        <legend>Perfis</legend>
+                        <div class="opcoes">
+                            <label><input type="checkbox" name="perfis" value="OPERADOR" data-lista> Operador</label>
+                            <label><input type="checkbox" name="perfis" value="RESPONSAVEL_PRODUCAO" data-lista> Responsável pela produção</label>
+                            <label><input type="checkbox" name="perfis" value="ADMINISTRADOR" data-lista> Administrador</label>
+                        </div>
+                    </fieldset>
+                    <div class="campo largo">
+                        <label class="opcoes"><input type="checkbox" name="ativo" checked> Ativo (pode entrar no sistema)</label>
+                    </div>
+                </div>
+                <div class="botoes">
+                    <button type="submit" class="primario">Salvar</button>
+                    <button type="button" data-cancelar>Cancelar</button>
+                </div>
+            </form>
+        </section>
+        <!-- RF03 -->
+        <section role="tabpanel" id="painel-estabelecimento" aria-labelledby="aba-estabelecimento" class="painel" hidden>
+            <h2>Estabelecimento</h2>
+            <p class="dica">Estes dados formam o cabeçalho do arquivo BPA.</p>
+            <form id="form-estabelecimento" novalidate>
+                <div class="mensagens" role="status" aria-live="polite" tabindex="-1"></div>
+                <div class="grade">
+                    <div class="campo">
+                        <label for="est-cnes">CNES</label>
+                        <input type="text" id="est-cnes" name="cnes" inputmode="numeric" maxlength="7" data-digitos>
+                        <span class="dica">7 dígitos.</span>
+                    </div>
+                    <div class="campo">
+                        <label for="est-cnpj">CNPJ</label>
+                        <input type="text" id="est-cnpj" name="cnpj" inputmode="numeric" maxlength="18" data-digitos>
+                        <span class="dica">14 dígitos. Pode digitar com ou sem pontuação.</span>
+                    </div>
+                    <div class="campo">
+                        <label for="est-nome">Nome do estabelecimento</label>
+                        <input type="text" id="est-nome" name="nome" maxlength="30">
+                        <span class="dica">Até 30 caracteres (limite do BPA).</span>
+                    </div>
+                    <div class="campo">
+                        <label for="est-sigla">Sigla</label>
+                        <input type="text" id="est-sigla" name="sigla" maxlength="6" data-maiusculas>
+                        <span class="dica">Até 6 caracteres.</span>
+                    </div>
+                    <div class="campo">
+                        <label for="est-orgao">Órgão de destino do arquivo</label>
+                        <input type="text" id="est-orgao" name="orgaoDestino" maxlength="40">
+                        <span class="dica">Ex.: Secretaria Municipal de Saúde. Até 40 caracteres.</span>
+                    </div>
+                    <fieldset class="campo" id="est-indicador">
+                        <legend>O destino é</legend>
+                        <div class="opcoes">
+                            <label><input type="radio" name="indicadorDestino" value="M"> Municipal</label>
+                            <label><input type="radio" name="indicadorDestino" value="E"> Estadual</label>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="botoes"><button type="submit" class="primario">Salvar estabelecimento</button></div>
+            </form>
+        </section>
+
+        <!-- RF04 -->
+        <section role="tabpanel" id="painel-profissionais" aria-labelledby="aba-profissionais" class="painel" hidden>
+            <h2>Profissionais</h2>
+            <div class="mensagens" id="msg-profissionais" role="status" aria-live="polite"></div>
+            <form class="busca" role="search" data-busca="profissionais">
+                <div class="campo">
+                    <label for="busca-profissionais">Buscar por nome ou CNS</label>
+                    <input type="search" id="busca-profissionais" name="q">
+                </div>
+                <button type="submit">Buscar</button>
+                <button type="button" class="primario" data-novo="profissionais">Novo profissional</button>
+            </form>
+            <table>
+                <caption class="visualmente-oculto">Profissionais cadastrados</caption>
+                <thead><tr><th scope="col">Nome</th><th scope="col">CNS</th><th scope="col">CBO</th><th scope="col">Situação</th><th scope="col"><span class="visualmente-oculto">Ações</span></th></tr></thead>
+                <tbody id="lista-profissionais"></tbody>
+            </table>
+
+            <form id="form-profissionais" class="painel" novalidate hidden>
+                <h3 data-titulo>Novo profissional</h3>
+                <div class="mensagens" role="status" aria-live="polite" tabindex="-1"></div>
+                <input type="hidden" name="id">
+                <div class="grade">
+                    <div class="campo largo">
+                        <label for="prof-nome">Nome</label>
+                        <input type="text" id="prof-nome" name="nome" maxlength="100">
+                    </div>
+                    <div class="campo">
+                        <label for="prof-cns">CNS</label>
+                        <input type="text" id="prof-cns" name="cns" inputmode="numeric" maxlength="18" data-digitos>
+                        <span class="dica">15 dígitos do Cartão Nacional de Saúde.</span>
+                    </div>
+                    <div class="campo">
+                        <label for="prof-cbo">CBO (ocupação)</label>
+                        <input type="text" id="prof-cbo" name="cbo" maxlength="6" data-maiusculas>
+                        <span class="dica">6 caracteres, como no CNES. Ex.: 225125.</span>
+                    </div>
+                    <div class="campo largo">
+                        <label class="opcoes"><input type="checkbox" name="ativo" checked> Ativo (pode receber lançamentos)</label>
+                    </div>
+                </div>
+                <div class="botoes">
+                    <button type="submit" class="primario">Salvar</button>
+                    <button type="button" data-cancelar>Cancelar</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- RF06 -->
+        <section role="tabpanel" id="painel-procedimentos" aria-labelledby="aba-procedimentos" class="painel" hidden>
+            <h2>Procedimentos</h2>
+            <div class="mensagens" id="msg-procedimentos" role="status" aria-live="polite"></div>
+            <form class="busca" role="search" data-busca="procedimentos">
+                <div class="campo">
+                    <label for="busca-procedimentos">Buscar por código ou descrição</label>
+                    <input type="search" id="busca-procedimentos" name="q">
+                </div>
+                <button type="submit">Buscar</button>
+                <button type="button" class="primario" data-novo="procedimentos">Novo procedimento</button>
+            </form>
+            <table>
+                <caption class="visualmente-oculto">Procedimentos cadastrados</caption>
+                <thead><tr><th scope="col">Código</th><th scope="col">Descrição</th><th scope="col">Instrumento</th><th scope="col">Exige CID</th><th scope="col"><span class="visualmente-oculto">Ações</span></th></tr></thead>
+                <tbody id="lista-procedimentos"></tbody>
+            </table>
+
+            <form id="form-procedimentos" class="painel" novalidate hidden>
+                <h3 data-titulo>Novo procedimento</h3>
+                <div class="mensagens" role="status" aria-live="polite" tabindex="-1"></div>
+                <input type="hidden" name="id">
+                <div class="grade">
+                    <div class="campo">
+                        <label for="proc-codigo">Código (Tabela SUS)</label>
+                        <input type="text" id="proc-codigo" name="codigo" inputmode="numeric" maxlength="14" data-digitos>
+                        <span class="dica">10 dígitos. Ex.: 03.01.01.007-2.</span>
+                    </div>
+                    <fieldset class="campo" id="proc-modalidade">
+                        <legend>Instrumento de registro</legend>
+                        <div class="opcoes">
+                            <label><input type="radio" name="modalidade" value="BPA_C"> BPA-C (consolidado)</label>
+                            <label><input type="radio" name="modalidade" value="BPA_I"> BPA-I (individualizado)</label>
+                        </div>
+                    </fieldset>
+                    <div class="campo largo">
+                        <label for="proc-descricao">Descrição</label>
+                        <input type="text" id="proc-descricao" name="descricao" maxlength="250">
+                    </div>
+                    <div class="campo largo">
+                        <label class="opcoes"><input type="checkbox" name="exigeCid"> Exige CID-10 no lançamento</label>
+                    </div>
+                </div>
+                <div class="botoes">
+                    <button type="submit" class="primario">Salvar</button>
+                    <button type="button" data-cancelar>Cancelar</button>
+                </div>
+            </form>
+        </section>
+
+    </main>
+</div>
+<script src="/js/api.js"></script>
+<script src="/js/layout.js"></script>
+<script src="/js/cadastro-lista.js"></script>
+<script src="/js/cadastros.js"></script>
+</body>
+</html>
