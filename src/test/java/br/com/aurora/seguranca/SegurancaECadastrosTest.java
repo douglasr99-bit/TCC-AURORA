@@ -83,7 +83,7 @@ class SegurancaECadastrosTest {
     }
 
     @Test
-    @DisplayName("T02b Login inexistente → mesma mensagem genérica (não revela se o login existe)")
+    @DisplayName("T03 Login inexistente → mesma mensagem genérica (não revela se o login existe)")
     void loginInexistente() throws Exception {
         mvc.perform(post("/login").param("login", "nao.existe").param("senha", SENHA).with(csrf()))
                 .andExpect(status().isUnauthorized())
@@ -91,7 +91,7 @@ class SegurancaECadastrosTest {
     }
 
     @Test
-    @DisplayName("T03 Usuário inativo não entra → 401 com a mesma mensagem genérica")
+    @DisplayName("T04 Usuário inativo não entra → 401 com a mesma mensagem genérica")
     void usuarioInativo() throws Exception {
         criarUsuario("it.inativo", Perfil.OPERADOR, false);
         mvc.perform(post("/login").param("login", "it.inativo").param("senha", SENHA).with(csrf()))
@@ -100,7 +100,7 @@ class SegurancaECadastrosTest {
     }
 
     @Test
-    @DisplayName("T03b Usuário desativado pelo administrador perde o acesso na hora (sessão encerrada)")
+    @DisplayName("T05 Usuário desativado pelo administrador perde o acesso na hora (sessão encerrada)")
     void desativadoPerdeSessao() throws Exception {
         MockHttpSession sessao = (MockHttpSession) mvc.perform(post("/login")
                         .param("login", "it.operador").param("senha", SENHA).with(csrf()))
@@ -129,7 +129,7 @@ class SegurancaECadastrosTest {
     // ---------- RNF04: autorização por perfil, verificada no servidor ----------
 
     @Test
-    @DisplayName("T04 Operador acessando cadastro de usuários → 403")
+    @DisplayName("T06 Operador acessando cadastro de usuários → 403")
     void operadorSemPermissao() throws Exception {
         mvc.perform(get("/api/usuarios").with(user(new UsuarioAutenticado(operador))))
                 .andExpect(status().isForbidden())
@@ -137,7 +137,7 @@ class SegurancaECadastrosTest {
     }
 
     @Test
-    @DisplayName("T04b Operador pode ler o estabelecimento, mas não alterar → 403")
+    @DisplayName("T07 Operador pode ler o estabelecimento, mas não alterar → 403")
     void operadorNaoAlteraEstabelecimento() throws Exception {
         mvc.perform(get("/api/estabelecimento").with(user(new UsuarioAutenticado(operador))))
                 .andExpect(status().is2xxSuccessful());
@@ -147,14 +147,14 @@ class SegurancaECadastrosTest {
     }
 
     @Test
-    @DisplayName("T04c Administrador sem perfil Operador não acessa pacientes → 403")
+    @DisplayName("T08 Administrador sem perfil Operador não acessa pacientes → 403")
     void adminSemAcessoAPacientes() throws Exception {
         mvc.perform(get("/api/pacientes").with(user(new UsuarioAutenticado(admin))))
                 .andExpect(status().isForbidden());
     }
 
     @Test
-    @DisplayName("Requisição que altera dados sem token CSRF → 403")
+    @DisplayName("T09 Requisição que altera dados sem token CSRF → 403")
     void semCsrf() throws Exception {
         mvc.perform(post("/api/procedimentos").with(user(new UsuarioAutenticado(admin)))
                         .contentType(MediaType.APPLICATION_JSON).content("{}"))
@@ -164,7 +164,7 @@ class SegurancaECadastrosTest {
     // ---------- RF08/RF09: erros de validação junto ao campo ----------
 
     @Test
-    @DisplayName("T08 CNS do paciente com 14 dígitos → 400 com erro no campo cns")
+    @DisplayName("T13 CNS do paciente com 14 dígitos → 400 com erro no campo cns")
     void cnsComDigitosAMenos() throws Exception {
         String corpo = """
                 {"cns":"10000000000000","nome":"JOAO FICTICIO","dataNascimento":"1980-01-01","sexo":"M",
@@ -178,7 +178,7 @@ class SegurancaECadastrosTest {
     }
 
     @Test
-    @DisplayName("Paciente com nome acima de 30 caracteres (limite do BPA) → recusado, não truncado")
+    @DisplayName("T32 Paciente com nome acima de 30 caracteres (limite do BPA) → recusado, não truncado")
     void nomeAcimaDoLayout() throws Exception {
         String corpo = """
                 {"cns":"100000000000007","nome":"JOAO FICTICIO DE SOUZA PEREIRA SANTOS","dataNascimento":"1980-01-01",
@@ -202,7 +202,7 @@ class SegurancaECadastrosTest {
     }
 
     @Test
-    @DisplayName("T09 Código de procedimento com dígito verificador inválido → 400 no campo codigo")
+    @DisplayName("T15 Código de procedimento com dígito verificador inválido → 400 no campo codigo")
     void procedimentoDvInvalido() throws Exception {
         mvc.perform(post("/api/procedimentos").with(user(new UsuarioAutenticado(admin))).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)

@@ -1,5 +1,7 @@
 # Registro de implementação — Aurora
 
+> Numeração final dos testes (T01–T32) e tabela da seção 16 em `docs/atualizacoes-tcc.md`; saída completa em `docs/evidencias/final/testes.txt`.
+
 Este registro alimenta a seção 14 (Implementação) do TCC. Para cada módulo: objetivo, tecnologias utilizadas, descrição da implementação e resultado obtido.
 
 ## Ambiente de desenvolvimento
@@ -25,7 +27,7 @@ Este registro alimenta a seção 14 (Implementação) do TCC. Para cada módulo:
 - *Objetivo:* login com perfis, senhas protegidas e autorização no servidor.
 - *Tecnologias:* Spring Security 7, BCrypt.
 - *Implementação:* login por formulário com sessão no servidor (sem JWT); respostas JSON para a interface; mensagem genérica "Login ou senha incorretos." também para login inexistente e usuário inativo; perfis viram papéis `ROLE_*`; autorização por rota e método HTTP em `SecurityConfig`; CSRF ativo com token em cookie (`XSRF-TOKEN`) enviado no cabeçalho `X-XSRF-TOKEN`; administrador inicial criado a partir de `AURORA_ADMIN_LOGIN`/`AURORA_ADMIN_SENHA` quando não há usuários.
-- *Resultado:* testes T01–T04 passando (login válido, senha errada, usuário inativo, 403 por perfil, 403 sem CSRF).
+- *Resultado:* testes T01–T09 passando (login válido, senha errada, usuário inativo, 403 por perfil, 403 sem CSRF).
 
 **Cadastros (RF02, RF03, RF04, RF05, RF06)**
 - *Objetivo:* manter usuários, estabelecimento, profissionais, pacientes e procedimentos.
@@ -54,7 +56,7 @@ Este registro alimenta a seção 14 (Implementação) do TCC. Para cada módulo:
   - **BPA-C:** sem paciente, idade obrigatória (0 a 130);
   - CID-10 obrigatório quando o procedimento exige, no formato do layout (letra + 2 ou 3 números) e existente na tabela de CID-10 vigente do SIA.
   A competência é a do mês da **data do atendimento**; se não existe, é criada ABERTA no primeiro lançamento (`INSERT ... ON CONFLICT DO NOTHING`, seguro com lançamentos simultâneos). Competência FECHADA recusa o lançamento com mensagem orientando a reabrir. O lançamento grava o usuário que registrou.
-- *Resultado:* testes T05–T12 passando, incluindo "atendimento de novembro lançado em dezembro" (entra em novembro se ABERTA; recusado se FECHADA).
+- *Resultado:* testes T10–T21 passando, incluindo "atendimento de novembro lançado em dezembro" (entra em novembro se ABERTA; recusado se FECHADA).
 
 **Consulta, correção e exclusão (RF10)**
 - *Implementação:* `GET /api/atendimentos?competencia=AAAAMM` e `?data=AAAA-MM-DD` buscam os lançamentos com uma única consulta (`join fetch`, sem N+1). Edição e exclusão só em competência ABERTA.
@@ -65,13 +67,13 @@ Este registro alimenta a seção 14 (Implementação) do TCC. Para cada módulo:
 
 **Conferência no navegador (11/11/2026):** fluxo completo feito pela interface, com dados fictícios: cadastro de profissional (CNS inválido recusado junto ao campo), procedimentos BPA-C e BPA-I; lançamento BPA-C sem idade (erro no campo) e salvo (competência 11/2026 criada ABERTA, barra superior atualizada); lançamento BPA-I com CNS de 14 dígitos (mensagem do wireframe), paciente sem cadastro (link para cadastrar), cadastro do paciente indígena sem etnia (erro no campo), volta ao lançamento com tudo restaurado, caráter obrigatório e salvamento; correção com quantidade 0 (recusada) e 5 (salva); consulta da competência. Prints em `docs/evidencias/incremento-2/`.
 
-**Testes do incremento 2:** 70 testes no total (74 após a correção das sessões: T03b e 3 testes de serviço), todos passando (`docs/evidencias/incremento-2/testes.txt`): 12 de regras do lançamento e 7 de integração do lançamento no PostgreSQL de teste, além dos 51 do incremento 1.
+**Testes do incremento 2:** 70 testes no total (74 após a correção das sessões: T05 e 3 testes de serviço), todos passando (`docs/evidencias/incremento-2/testes.txt`): 12 de regras do lançamento e 7 de integração do lançamento no PostgreSQL de teste, além dos 51 do incremento 1.
 
 ### Incremento 3 (11/11/2026) — competências, arquivo BPA, histórico e HTTPS
 
 **Conferência, fechamento e reabertura (RF11, RF12, RF15)**
 - *Implementação:* `GET /api/competencias/{id}/resumo` devolve os totais (atendimentos, BPA-C, BPA-I, profissionais), a produção por procedimento e por profissional (consultas agregadas com `group by`, sem carregar os lançamentos) e o histórico de reaberturas. Fechar: só ABERTA → FECHADA, grava `data_fechamento`. Reabrir: só FECHADA, motivo obrigatório (até 255 caracteres), grava `ReaberturaCompetencia` com data, usuário e motivo e volta para ABERTA.
-- *Resultado:* testes T11 (conferência), T15 (reabrir sem motivo → erro; com motivo → registra e reabre) e transições inválidas passando.
+- *Resultado:* testes T28 (conferência), T27 (reabrir sem motivo → erro; com motivo → registra e reabre) e transições inválidas passando.
 
 **Geração do arquivo BPA (RF13, RNF03, RNF07)**
 - *Tecnologias:* Java (pacote `bpa`, sem dependências), Spring Data JPA.
@@ -85,11 +87,11 @@ Este registro alimenta a seção 14 (Implementação) do TCC. Para cada módulo:
   - Campos opcionais sem dado saem em branco; número do endereço vazio sai "SN" (valor padrão do layout); CPF, INE, serviço/classificação, equipe, autorização, e-mail e complemento em branco.
   - Nome do arquivo `bpa_AAAAMM.txt` (wireframe da tela de competências).
   - Geração só com a competência FECHADA ("Feche a competência antes de gerar o arquivo.", diagrama de sequência) e com o estabelecimento cadastrado. Cada geração grava `ExportacaoBpa` (conteúdo, nome, total de registros, usuário, data).
-- *Resultado:* 11 testes do arquivo conferindo cada campo nas posições do layout, tamanhos exatos (130/48/351 + CR LF), só ASCII, consolidação, folhas, etnia X999 e não truncamento. **RNF07: 3.000 atendimentos geraram o arquivo em 121 ms** (limite: 10 s), teste T16.
+- *Resultado:* 11 testes do arquivo conferindo cada campo nas posições do layout, tamanhos exatos (130/48/351 + CR LF), só ASCII, consolidação, folhas, etnia X999 e não truncamento. **RNF07: 3.000 atendimentos geraram o arquivo em 121 ms** (limite: 10 s), teste T29.
 
 **Histórico de exportações (RF14)**
 - *Implementação:* `GET /api/exportacoes` (consulta por projeção, sem carregar o conteúdo dos arquivos) e `GET /api/exportacoes/{id}/arquivo` (baixa de novo exatamente o mesmo arquivo).
-- *Resultado:* teste T16 confere que o arquivo baixado do histórico é idêntico ao gerado.
+- *Resultado:* teste T29 confere que o arquivo baixado do histórico é idêntico ao gerado.
 
 **Interface de competências**
 - *Implementação:* `competencias.html` seguindo o wireframe: seletor de competência, título com a situação, quatro cartões de totais, produção por procedimento e por profissional, "Fechar competência" (com confirmação na própria página), "Gerar arquivo BPA" **desabilitado enquanto ABERTA** com a explicação "Feche a competência para gerar o arquivo." ao lado, "Reabrir competência" com o motivo obrigatório, lista de reaberturas e histórico de exportações com "Baixar".
@@ -98,7 +100,7 @@ Este registro alimenta a seção 14 (Implementação) do TCC. Para cada módulo:
 - *Implementação:* HTTPS **ligado por padrão** na porta 8443 (`server.ssl.*`), keystore PKCS12 e senha em `AURORA_KEYSTORE`/`AURORA_KEYSTORE_SENHA`; cookie de sessão `Secure`. `AURORA_HTTPS=false`/`AURORA_PORTA=8080` só para desenvolvimento. Guia completo (geração do certificado com SAN, instalação no Windows/Chrome/Edge e no Firefox, execução como serviço, firewall, cópia de segurança e restauração) em `docs/guia-implantacao.md` (Apêndice A).
 - *Resultado:* conferido com certificado gerado pelo `keytool` (seção 10 do guia): HTTPS 200 com HSTS; certificado não instalado é recusado; HTTP na 8443 recusado.
 
-**Conferência no navegador (11/11/2026):** com a competência 11/2026 de teste (dados fictícios): tela igual ao wireframe, "Gerar arquivo BPA" desabilitado com a explicação enquanto ABERTA; fechamento com confirmação (selo e barra superior passam a FECHADA, "Gerar" habilitado, "Reabrir" disponível); arquivo gerado pela mesma rota do botão (`bpa_202611.txt`, `text/plain; charset=US-ASCII`, linhas de 130/48/351 posições + CR LF, campo de controle 1405 conferido à mão); reabertura sem motivo recusada no campo e com motivo registrada na lista "Reaberturas desta competência"; histórico com "Baixar". Prints e o arquivo gerado (`bpa_202611_exemplo_ficticio.txt`) em `docs/evidencias/incremento-3/`. O clique em "Gerar arquivo BPA" que dispara o download no navegador não foi exercitado na conferência (para não gravar arquivo na máquina); a rota e o download estão cobertos pelo teste T16.
+**Conferência no navegador (11/11/2026):** com a competência 11/2026 de teste (dados fictícios): tela igual ao wireframe, "Gerar arquivo BPA" desabilitado com a explicação enquanto ABERTA; fechamento com confirmação (selo e barra superior passam a FECHADA, "Gerar" habilitado, "Reabrir" disponível); arquivo gerado pela mesma rota do botão (`bpa_202611.txt`, `text/plain; charset=US-ASCII`, linhas de 130/48/351 posições + CR LF, campo de controle 1405 conferido à mão); reabertura sem motivo recusada no campo e com motivo registrada na lista "Reaberturas desta competência"; histórico com "Baixar". Prints e o arquivo gerado (`bpa_202611_exemplo_ficticio.txt`) em `docs/evidencias/incremento-3/`. O clique em "Gerar arquivo BPA" que dispara o download no navegador não foi exercitado na conferência (para não gravar arquivo na máquina); a rota e o download estão cobertos pelo teste T29.
 
 **Testes do incremento 3:** 91 testes no total, todos passando (`docs/evidencias/incremento-3/testes.txt`).
 
@@ -123,7 +125,7 @@ Este registro alimenta a seção 14 (Implementação) do TCC. Para cada módulo:
 | 11/11/2026 | Na tela de lançamento, depois de salvar, data, profissional e procedimento ficam preenchidos. | Agiliza a digitação em sequência (vários pacientes do mesmo profissional no mesmo dia). | Pode ser citado na descrição da interface. |
 | 11/11/2026 | No BPA-I, a idade gravada no atendimento é calculada pela data de nascimento do paciente na data do atendimento; no BPA-C, é informada. | O layout do BPA-I também tem o campo idade; calcular evita digitação e divergência com o cadastro. | Citar na descrição do lançamento. |
 | 11/11/2026 | Ao ir do lançamento para "Cadastrar novo paciente", o lançamento em andamento é guardado no navegador (`sessionStorage`, só durante a sessão da aba) e restaurado na volta, com o paciente já buscado pelo CNS. | RF09: não perder o que foi digitado. Sem isso, o usuário redigitava data, profissional, procedimento e CID. | Pode ser citado na descrição da interface. |
-| 11/11/2026 | Sessões registradas (`SessionRegistry`): ao desativar um usuário, alterar seus perfis ou trocar sua senha, as sessões abertas dele são encerradas na hora; a próxima ação leva ao login com o aviso "Seu acesso foi alterado pelo administrador. Entre novamente." | Sem isso, perfis e situação só eram lidos no login: um usuário desativado continuava usando o sistema até a sessão expirar (até 8 horas). Problema encontrado na conferência pela interface. | Citar na seção de Segurança (RNF04). Teste T03b. |
+| 11/11/2026 | Sessões registradas (`SessionRegistry`): ao desativar um usuário, alterar seus perfis ou trocar sua senha, as sessões abertas dele são encerradas na hora; a próxima ação leva ao login com o aviso "Seu acesso foi alterado pelo administrador. Entre novamente." | Sem isso, perfis e situação só eram lidos no login: um usuário desativado continuava usando o sistema até a sessão expirar (até 8 horas). Problema encontrado na conferência pela interface. | Citar na seção de Segurança (RNF04). Teste T05. |
 | 11/11/2026 | Arquivo BPA em ASCII, com textos em maiúsculas e sem acento. | O layout define o arquivo como texto no "padrão ASCII (.TXT)"; não há codificação para acentos. | Citar na descrição da geração do arquivo. |
 | 11/11/2026 | Folhas: BPA-C com 20 linhas por folha; BPA-I com 99 linhas por folha e folhas separadas por profissional; numeração contínua no arquivo. | Domínios do layout (BPA-C 01..20, BPA-I 01..99), Manual do BPA (folhas do BPA-I por profissional) e nota da versão 02.68 do BPA Magnético. | Citar na descrição da geração do arquivo. |
 | 11/11/2026 | A conferência (RF11) mostra também a quantidade de lançamentos e as reaberturas da competência. | Ajuda o responsável a conferir antes de fechar e deixa visível o histórico exigido no RF15. | Atualizar o wireframe da tela de competências, se desejar. |
