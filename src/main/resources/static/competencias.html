@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Competências — Aurora</title>
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/competencias.css">
+</head>
+<body>
+<header id="barra"></header>
+<div class="estrutura">
+    <nav id="menu"></nav>
+    <main id="conteudo" class="conteudo">
+        <div class="seletor">
+            <label for="escolha-competencia">Competência</label>
+            <select id="escolha-competencia"></select>
+        </div>
+
+        <p id="sem-competencias" class="painel" hidden>Ainda não há competências. A competência é criada no primeiro lançamento do mês.</p>
+
+        <div id="detalhe" hidden>
+            <div class="titulo-competencia">
+                <h1 id="titulo">Competência</h1>
+                <span class="selo" id="selo-situacao"></span>
+            </div>
+            <div class="mensagens" id="msg" role="status" aria-live="polite" tabindex="-1"></div>
+
+            <!-- RF11 -->
+            <ul class="cartoes" aria-label="Totais da competência">
+                <li><span>Atendimentos</span><strong id="total-atendimentos">0</strong></li>
+                <li><span>BPA consolidado</span><strong id="total-bpac">0</strong></li>
+                <li><span>BPA individualizado</span><strong id="total-bpai">0</strong></li>
+                <li><span>Profissionais</span><strong id="total-profissionais">0</strong></li>
+            </ul>
+
+            <h2>Produção por procedimento</h2>
+            <table>
+                <caption class="visualmente-oculto">Produção por procedimento</caption>
+                <thead><tr><th scope="col">Código</th><th scope="col">Procedimento</th><th scope="col">Modalidade</th><th scope="col" class="numero">Lançamentos</th><th scope="col" class="numero">Quantidade</th></tr></thead>
+                <tbody id="lista-procedimentos"></tbody>
+            </table>
+
+            <h2>Produção por profissional</h2>
+            <table>
+                <caption class="visualmente-oculto">Produção por profissional</caption>
+                <thead><tr><th scope="col">Profissional</th><th scope="col">CBO</th><th scope="col" class="numero">Lançamentos</th><th scope="col" class="numero">Quantidade</th></tr></thead>
+                <tbody id="lista-profissionais"></tbody>
+            </table>
+
+            <!-- RF12, RF13, RF15 -->
+            <div class="acoes-competencia">
+                <button type="button" class="primario" id="botao-fechar" hidden>Fechar competência</button>
+                <button type="button" class="primario" id="botao-reabrir" hidden>Reabrir competência</button>
+                <button type="button" id="botao-gerar" aria-describedby="explica-gerar">Gerar arquivo BPA</button>
+                <span class="dica" id="explica-gerar"></span>
+            </div>
+
+            <form id="confirma-fechar" class="painel confirmacao" hidden novalidate>
+                <p><strong>Fechar a competência <span data-mes></span>?</strong> Depois de fechada, ela não aceita lançamentos
+                    nem correções até ser reaberta. O arquivo BPA só pode ser gerado com a competência fechada.</p>
+                <div class="botoes">
+                    <button type="submit" class="primario">Sim, fechar</button>
+                    <button type="button" data-cancelar>Cancelar</button>
+                </div>
+            </form>
+
+            <form id="form-reabrir" class="painel confirmacao" hidden novalidate>
+                <div class="mensagens" role="status" aria-live="polite" tabindex="-1"></div>
+                <div class="campo">
+                    <label for="motivo">Motivo da reabertura</label>
+                    <textarea id="motivo" name="motivo" rows="3" maxlength="255"></textarea>
+                    <span class="dica">Obrigatório. Fica registrado com a data e o seu usuário. Ex.: corrigir lançamentos glosados.</span>
+                </div>
+                <div class="botoes">
+                    <button type="submit" class="primario">Reabrir competência</button>
+                    <button type="button" data-cancelar>Cancelar</button>
+                </div>
+            </form>
+
+            <section id="secao-reaberturas" hidden>
+                <h2>Reaberturas desta competência</h2>
+                <ul id="lista-reaberturas"></ul>
+            </section>
+        </div>
+
+        <!-- RF14 -->
+        <section>
+            <h2>Histórico de exportações</h2>
+            <div class="mensagens" id="msg-historico" role="status" aria-live="polite"></div>
+            <table>
+                <caption class="visualmente-oculto">Arquivos BPA gerados</caption>
+                <thead><tr><th scope="col">Data</th><th scope="col">Competência</th><th scope="col">Arquivo</th><th scope="col" class="numero">Registros</th><th scope="col">Usuário</th><th scope="col"><span class="visualmente-oculto">Ações</span></th></tr></thead>
+                <tbody id="lista-exportacoes"></tbody>
+            </table>
+        </section>
+        <p class="dica">Após o fechamento, o botão "Reabrir competência" fica disponível e exige o motivo da reabertura.</p>
+    </main>
+</div>
+<script src="/js/api.js"></script>
+<script src="/js/layout.js"></script>
+<script src="/js/competencias.js"></script>
+</body>
+</html>
