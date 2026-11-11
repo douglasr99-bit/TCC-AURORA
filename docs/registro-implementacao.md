@@ -41,6 +41,32 @@ Este registro alimenta a seção 14 (Implementação) do TCC. Para cada módulo:
 
 **Testes do incremento 1:** 51 testes, todos passando (`docs/evidencias/incremento-1/testes.txt`): validação do CNS (13), dígito verificador com os 5.024 códigos do SIGTAP (12), regras do paciente (8), regras de usuário (4) e integração de segurança e cadastros no PostgreSQL de teste (14).
 
+### Incremento 2 (11/11/2026) — lançamento de atendimentos
+
+**Lançamento com validação (RF07, RF08, RF09)**
+- *Objetivo:* registrar os atendimentos no dia a dia, com a validação feita no momento do lançamento.
+- *Tecnologias:* Spring Web MVC, Bean Validation, Spring Data JPA, PostgreSQL.
+- *Implementação:* `AtendimentoService` reúne todas as regras e devolve **todos** os erros do lançamento de uma vez, cada um com o seu campo:
+  - data obrigatória e não futura;
+  - profissional existente e ativo; procedimento existente;
+  - quantidade de 1 a 999999;
+  - **BPA-I:** paciente obrigatório (buscado pelo CNS), idade calculada pela data de nascimento na data do atendimento, caráter de atendimento obrigatório (tabela do SIA);
+  - **BPA-C:** sem paciente, idade obrigatória (0 a 130);
+  - CID-10 obrigatório quando o procedimento exige, no formato do layout (letra + 2 ou 3 números) e existente na tabela de CID-10 vigente do SIA.
+  A competência é a do mês da **data do atendimento**; se não existe, é criada ABERTA no primeiro lançamento (`INSERT ... ON CONFLICT DO NOTHING`, seguro com lançamentos simultâneos). Competência FECHADA recusa o lançamento com mensagem orientando a reabrir. O lançamento grava o usuário que registrou.
+- *Resultado:* testes T05–T12 passando, incluindo "atendimento de novembro lançado em dezembro" (entra em novembro se ABERTA; recusado se FECHADA).
+
+**Consulta, correção e exclusão (RF10)**
+- *Implementação:* `GET /api/atendimentos?competencia=AAAAMM` e `?data=AAAA-MM-DD` buscam os lançamentos com uma única consulta (`join fetch`, sem N+1). Edição e exclusão só em competência ABERTA.
+- *Resultado:* testes de consulta, correção e exclusão passando; competência fechada bloqueia as três operações.
+
+**Interface do lançamento**
+- *Implementação:* tela `atendimentos.html` seguindo o wireframe: data com a indicação "Define a competência: MM/AAAA"; profissional e procedimento escolhidos por busca (nome/CNS, código/descrição), com teclado; a área "Dados do paciente (BPA-I)" só aparece para procedimento BPA-I, com busca pelo CNS e nome/nascimento preenchidos do cadastro; idade só no BPA-C; CID só quando o procedimento exige. Campos ocultos não são enviados. Enter salva. Depois de salvar, data, profissional e procedimento continuam preenchidos para o próximo lançamento. Lista "Últimos lançamentos de hoje" com Editar/Excluir (exclusão pede confirmação) e aba "Consultar e corrigir" por competência. Barra superior mostra "Competência atual: MM/AAAA – ABERTA/FECHADA". Paciente sem cadastro: link para o cadastro com o CNS já preenchido (perfil Operador).
+
+**Conferência no navegador (11/11/2026):** fluxo completo feito pela interface, com dados fictícios: cadastro de profissional (CNS inválido recusado junto ao campo), procedimentos BPA-C e BPA-I; lançamento BPA-C sem idade (erro no campo) e salvo (competência 11/2026 criada ABERTA, barra superior atualizada); lançamento BPA-I com CNS de 14 dígitos (mensagem do wireframe), paciente sem cadastro (link para cadastrar), cadastro do paciente indígena sem etnia (erro no campo), volta ao lançamento com tudo restaurado, caráter obrigatório e salvamento; correção com quantidade 0 (recusada) e 5 (salva); consulta da competência. Prints em `docs/evidencias/incremento-2/`.
+
+**Testes do incremento 2:** 70 testes no total, todos passando (`docs/evidencias/incremento-2/testes.txt`): 12 de regras do lançamento e 7 de integração do lançamento no PostgreSQL de teste, além dos 51 do incremento 1.
+
 ## Desvios do projeto
 
 | Data | O que mudou | Motivo | Impacto no TCC |
@@ -57,6 +83,12 @@ Este registro alimenta a seção 14 (Implementação) do TCC. Para cada módulo:
 | 11/11/2026 | Usuário Administrador não pode se desativar nem retirar de si o perfil de Administrador. | Evita que a instalação fique sem nenhum administrador. | Pode ser citado como regra de negócio do RF02. |
 | 11/11/2026 | CNES e CNPJ do estabelecimento e código IBGE do município são validados só no formato (quantidade de dígitos). | Não há nos documentos oficiais obtidos o algoritmo do dígito verificador do CNES, e o CNPJ passou a ter formato alfanumérico em 2026, o que o layout do BPA (NUM 14) ainda não prevê. A validação do município contra a tabela do IBGE não está no escopo. | Citar nas Limitações. |
 | 11/11/2026 | O Maven Wrapper gerado pelo Initializr foi fixado na versão 3.9.16 (o padrão era 3.10.0). | Manter a versão do Quadro 2 (Maven 3.9). | Nenhum. |
+| 11/11/2026 | O lançamento valida o CID-10 contra a tabela de CID-10 vigente do SIA (14.274 códigos, `S_CID` do pacote BDSIA 10/2026), além do formato. | Evita lançar CID inexistente, que seria glosado. A tabela é a mesma usada pelo SIA. | Citar no RF08. Fonte em `docs/referencias/sia_202610a_cid10.csv`. As críticas de compatibilidade (CID × sexo, procedimento × CID) continuam fora do escopo. |
+| 11/11/2026 | Nova rota `GET /api/competencias/situacao?mesAno=AAAAMM`, liberada para todos os perfis. | A barra superior mostra a competência atual e a situação para todos, mas `GET /api/competencias` é só do Responsável. | Acrescentar a rota na tabela da API. |
+| 11/11/2026 | Na tela de lançamento, depois de salvar, data, profissional e procedimento ficam preenchidos. | Agiliza a digitação em sequência (vários pacientes do mesmo profissional no mesmo dia). | Pode ser citado na descrição da interface. |
+| 11/11/2026 | No BPA-I, a idade gravada no atendimento é calculada pela data de nascimento do paciente na data do atendimento; no BPA-C, é informada. | O layout do BPA-I também tem o campo idade; calcular evita digitação e divergência com o cadastro. | Citar na descrição do lançamento. |
+| 11/11/2026 | Ao ir do lançamento para "Cadastrar novo paciente", o lançamento em andamento é guardado no navegador (`sessionStorage`, só durante a sessão da aba) e restaurado na volta, com o paciente já buscado pelo CNS. | RF09: não perder o que foi digitado. Sem isso, o usuário redigitava data, profissional, procedimento e CID. | Pode ser citado na descrição da interface. |
+| 11/11/2026 | **Limitação:** perfis e situação do usuário são lidos no login. Mudança de perfil só vale no próximo login, e um usuário desativado continua com a sessão aberta até sair ou a sessão expirar (até 8 horas). | Comportamento padrão da autenticação por sessão do Spring Security. | Corrigir encerrando as sessões do usuário ao desativá-lo ou alterar seus perfis, ou citar nas Limitações. |
 
 ## Conferência do layout oficial (11/11/2026)
 
