@@ -1,0 +1,34 @@
+.linha-tres { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 1.5rem; }
+
+.caixa-paciente {
+    border: 2px dashed var(--cor-borda); border-radius: var(--raio);
+    padding: 1rem 1.25rem; margin: 0 0 1.25rem; background: #fafbfc;
+}
+.caixa-paciente legend { font-weight: 700; padding: 0 .4rem; font-size: 1.05rem; }
+
+input[readonly] { background: #eef1f5; color: var(--cor-texto-suave); }
+
+.com-botao { display: flex; gap: .5rem; }
+.com-botao input { flex: 1; }
+
+.busca-campo { position: relative; }
+.resultados-busca {
+    position: absolute; z-index: 5; left: 0; right: 0; margin: .2rem 0 0; padding: 0; list-style: none;
+    background: #fff; border: 1px solid var(--cor-borda); border-radius: var(--raio);
+    box-shadow: 0 4px 12px rgba(0,0,0,.15); max-height: 18rem; overflow-y: auto;
+}
+.resultados-busca button {
+    display: block; width: 100%; text-align: left; border: 0; border-radius: 0;
+    background: #fff; color: var(--cor-texto); padding: .5rem .75rem;
+}
+.resultados-busca button:hover, .resultados-busca button:focus { background: #e8eef7; }
+.resultados-busca .vazio { padding: .5rem .75rem; }
+.resultados-busca small { color: var(--cor-texto-suave); }
+
+.lista-dia { margin-top: 1.5rem; }
+.em-edicao { background: #fff7e0; }
+td .botoes-linha { display: flex; gap: .25rem; }
+
+@media (max-width: 1024px) {
+    .linha-tres { grid-template-columns: 1fr; }
+}

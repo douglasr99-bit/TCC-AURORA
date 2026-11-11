@@ -16,7 +16,7 @@ const Layout = (() => {
         { id: "cadastros", rotulo: "Cadastros", href: "/cadastros.html", perfis: ["ADMINISTRADOR"] },
     ];
     // Telas dos próximos incrementos ainda não existem.
-    const INCREMENTO_ATUAL = 1;
+    const INCREMENTO_ATUAL = 2;
 
     const NOMES_PERFIL = {
         ADMINISTRADOR: "Administrador",
@@ -24,9 +24,25 @@ const Layout = (() => {
         RESPONSAVEL_PRODUCAO: "Responsável pela produção",
     };
 
-    function competenciaAtual() {
+    function mesAnoAtual() {
         const hoje = new Date();
-        return `${String(hoje.getMonth() + 1).padStart(2, "0")}/${hoje.getFullYear()}`;
+        const mm = String(hoje.getMonth() + 1).padStart(2, "0");
+        return { aaaamm: `${hoje.getFullYear()}${mm}`, texto: `${mm}/${hoje.getFullYear()}` };
+    }
+
+    const NOMES_SITUACAO = { ABERTA: "ABERTA", FECHADA: "FECHADA" };
+
+    /** Atualiza a competência atual e a situação na barra superior (sempre visível). */
+    async function atualizarCompetencia() {
+        const atual = mesAnoAtual();
+        const alvo = document.getElementById("competencia-atual");
+        try {
+            const c = await Api.get(`/api/competencias/situacao?mesAno=${atual.aaaamm}`);
+            alvo.innerHTML = `Competência atual: <strong>${atual.texto}</strong> – ${c.situacao
+                ? `<strong>${NOMES_SITUACAO[c.situacao]}</strong>` : "sem lançamentos"}`;
+        } catch (e) {
+            alvo.innerHTML = `Competência atual: <strong>${atual.texto}</strong>`;
+        }
     }
 
     function montarBarra(usuario) {
@@ -35,11 +51,9 @@ const Layout = (() => {
         barra.innerHTML = `
             <button type="button" class="botao-menu" aria-expanded="false" aria-controls="menu">Menu</button>
             <span class="marca">AURORA</span>
-            <span class="competencia" id="competencia-atual">
-                Competência <strong>${competenciaAtual()}</strong> · <span id="situacao-competencia">sem lançamentos</span>
-            </span>
-            <span class="usuario">${esc(usuario.nome)}
-                <small>${usuario.perfis.map(p => NOMES_PERFIL[p]).join(", ")}</small></span>
+            <span class="competencia" id="competencia-atual" aria-live="polite"></span>
+            <span class="usuario">${esc(usuario.nome.split(" ")[0])}
+                (${usuario.perfis.map(p => NOMES_PERFIL[p]).join(", ")})</span>
             <button type="button" id="sair">Sair</button>`;
 
         barra.querySelector("#sair").addEventListener("click", async () => {
@@ -72,6 +86,7 @@ const Layout = (() => {
         const usuario = await Api.get("/api/me");
         montarBarra(usuario);
         montarMenu(usuario, paginaAtual);
+        atualizarCompetencia();
         if (perfisDaTela && !perfisDaTela.some(p => usuario.perfis.includes(p))) {
             document.getElementById("conteudo").innerHTML =
                 `<div class="painel"><h1>Acesso não permitido</h1>
@@ -81,5 +96,5 @@ const Layout = (() => {
         return usuario;
     }
 
-    return { iniciar, NOMES_PERFIL };
+    return { iniciar, atualizarCompetencia, NOMES_PERFIL };
 })();

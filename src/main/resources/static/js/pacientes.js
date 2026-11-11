@@ -55,4 +55,12 @@ form.nacionalidade.addEventListener("change", atualizarEtnia);
         preencherSelect(form.etnia, "etnia"),
     ]);
     pacientes.mostrar();
+
+    // Vindo do lançamento ("Paciente sem cadastro?"): abre o formulário com o CNS digitado.
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("novo")) {
+        document.querySelector('[data-novo="pacientes"]').click();
+        if (params.get("cns")) { form.cns.value = params.get("cns"); form.nome.focus(); }
+        document.getElementById("voltar-lancamento").hidden = false;
+    }
 })();

@@ -86,7 +86,7 @@ function CadastroLista(cfg) {
             fechar();
             await carregar();
             mensagem.className = "mensagens sucesso";
-            mensagem.textContent = `${cfg.nomeItem(salvo)} ${id ? "atualizado" : "cadastrado"} com sucesso.`;
+            mensagem.textContent = `${cfg.nomeItem(salvo)}: ${id ? "alterações salvas" : "cadastro salvo"}.`;
         } catch (erro) {
             // O que foi digitado continua no formulário.
             Formulario.mostrarErros(form, erro.erros);

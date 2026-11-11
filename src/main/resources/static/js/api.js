@@ -76,7 +76,8 @@ const Formulario = (() => {
     function ler(form) {
         const dados = {};
         for (const el of form.elements) {
-            if (!el.name || el.disabled) continue;
+            // :disabled também pega campos dentro de um fieldset desabilitado
+            if (!el.name || el.matches(":disabled")) continue;
             if (el.type === "checkbox") {
                 if (el.dataset.lista !== undefined) {
                     dados[el.name] = dados[el.name] || [];
