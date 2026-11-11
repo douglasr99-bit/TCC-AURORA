@@ -3,6 +3,17 @@
 const form = document.getElementById("form-login");
 form.login.focus();
 
+// Motivo de ter voltado ao login (ex.: sessão expirada ou acesso alterado pelo administrador).
+try {
+    const aviso = sessionStorage.getItem("aurora.avisoLogin");
+    if (aviso) {
+        sessionStorage.removeItem("aurora.avisoLogin");
+        const msgs = form.querySelector(".mensagens");
+        msgs.className = "mensagens aviso";
+        msgs.textContent = aviso;
+    }
+} catch (e) { /* sem armazenamento: segue sem aviso */ }
+
 form.addEventListener("submit", async evento => {
     evento.preventDefault();
     Formulario.limparErros(form);

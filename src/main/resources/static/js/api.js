@@ -44,6 +44,11 @@ const Api = (() => {
         }
 
         if (resposta.status === 401 && !opcoes.semRedirecionar) {
+            // Leva o motivo para a tela de login (sessão expirada ou acesso alterado).
+            try {
+                const corpo = await resposta.json();
+                sessionStorage.setItem("aurora.avisoLogin", corpo.erros[0].mensagem);
+            } catch (e) { /* sem mensagem: o login abre normalmente */ }
             window.location.href = "/login.html";
             throw { status: 401, erros: [] };
         }

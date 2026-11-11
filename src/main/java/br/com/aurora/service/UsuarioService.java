@@ -1,11 +1,14 @@
 package br.com.aurora.service;
 
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.aurora.config.SessoesUsuario;
 import br.com.aurora.domain.Perfil;
 import br.com.aurora.domain.Usuario;
 import br.com.aurora.dto.UsuarioEntrada;
@@ -21,10 +24,12 @@ public class UsuarioService {
 
     private final UsuarioRepository repositorio;
     private final PasswordEncoder encoder;
+    private final SessoesUsuario sessoes;
 
-    public UsuarioService(UsuarioRepository repositorio, PasswordEncoder encoder) {
+    public UsuarioService(UsuarioRepository repositorio, PasswordEncoder encoder, SessoesUsuario sessoes) {
         this.repositorio = repositorio;
         this.encoder = encoder;
+        this.sessoes = sessoes;
     }
 
     @Transactional(readOnly = true)
@@ -75,9 +80,17 @@ public class UsuarioService {
         }
         erros.lancarSeHouver();
 
+        boolean estavaAtivo = u.isAtivo();
+        Set<Perfil> perfisAntes = EnumSet.noneOf(Perfil.class);
+        perfisAntes.addAll(u.getPerfis());
         preencher(u, dados);
-        if (Texto.limpo(dados.senha()) != null) {
+        boolean trocouSenha = Texto.limpo(dados.senha()) != null;
+        if (trocouSenha) {
             u.setSenhaHash(encoder.encode(dados.senha()));
+        }
+        // Desativado, perfis alterados ou senha trocada: encerra as sessões abertas dele.
+        if (estavaAtivo != u.isAtivo() || !perfisAntes.equals(u.getPerfis()) || trocouSenha) {
+            sessoes.encerrar(u.getId());
         }
         return UsuarioSaida.de(u);
     }

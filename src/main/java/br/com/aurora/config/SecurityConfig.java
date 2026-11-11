@@ -10,12 +10,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.csrf.CsrfException;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -41,8 +44,20 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    /** Registro das sessões abertas, para encerrá-las quando o usuário muda (ver {@link SessoesUsuario}). */
     @Bean
-    SecurityFilterChain filtros(HttpSecurity http, JsonMapper json) throws Exception {
+    SessionRegistry registroSessoes() {
+        return new SessionRegistryImpl();
+    }
+
+    /** Avisa o registro quando uma sessão termina (logout ou expiração). */
+    @Bean
+    HttpSessionEventPublisher publicadorEventosSessao() {
+        return new HttpSessionEventPublisher();
+    }
+
+    @Bean
+    SecurityFilterChain filtros(HttpSecurity http, JsonMapper json, SessionRegistry registroSessoes) throws Exception {
         RequestMatcher api = PathPatternRequestMatcher.withDefaults().matcher("/api/**");
 
         http
@@ -84,6 +99,21 @@ public class SecurityConfig {
             .logout(l -> l
                 .logoutUrl("/logout")
                 .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT)))
+            // Sessões sem limite de quantidade, mas registradas: ao desativar um usuário ou mudar seus
+            // perfis, as sessões dele são encerradas e a próxima requisição exige novo login.
+            .sessionManagement(s -> s
+                .maximumSessions(-1)
+                .sessionRegistry(registroSessoes)
+                .expiredSessionStrategy(evento -> {
+                    var req = evento.getRequest();
+                    var res = evento.getResponse();
+                    if (api.matches(req)) {
+                        escrever(res, HttpStatus.UNAUTHORIZED, json, RespostaErro.de(null,
+                                "Seu acesso foi alterado pelo administrador. Entre novamente."));
+                    } else {
+                        res.sendRedirect("/login.html");
+                    }
+                }))
             // Token CSRF em cookie legível pelo JavaScript (XSRF-TOKEN), enviado no cabeçalho X-XSRF-TOKEN.
             .csrf(c -> c.spa())
             .exceptionHandling(e -> e
