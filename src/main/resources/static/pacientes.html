@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pacientes — Aurora</title>
+    <link rel="stylesheet" href="/css/base.css">
+</head>
+<body>
+<header id="barra"></header>
+<div class="estrutura">
+    <nav id="menu"></nav>
+    <main id="conteudo" class="conteudo">
+        <h1>Pacientes</h1>
+        <section class="painel">
+            <div class="mensagens" id="msg-pacientes" role="status" aria-live="polite"></div>
+            <form class="busca" role="search" data-busca="pacientes">
+                <div class="campo">
+                    <label for="busca-pacientes">Buscar por nome ou CNS</label>
+                    <input type="search" id="busca-pacientes" name="q">
+                </div>
+                <button type="submit">Buscar</button>
+                <button type="button" class="primario" data-novo="pacientes">Novo paciente</button>
+            </form>
+            <table>
+                <caption class="visualmente-oculto">Pacientes cadastrados</caption>
+                <thead><tr><th scope="col">Nome</th><th scope="col">CNS</th><th scope="col">Nascimento</th><th scope="col">Sexo</th><th scope="col"><span class="visualmente-oculto">Ações</span></th></tr></thead>
+                <tbody id="lista-pacientes"></tbody>
+            </table>
+        </section>
+
+        <!-- RF05: campos exigidos pelo BPA-I (layout DATASUS) -->
+        <form id="form-pacientes" class="painel" novalidate hidden>
+            <h2 data-titulo>Novo paciente</h2>
+            <div class="mensagens" role="status" aria-live="polite" tabindex="-1"></div>
+            <input type="hidden" name="id">
+            <div class="grade">
+                <div class="campo">
+                    <label for="pac-cns">CNS</label>
+                    <input type="text" id="pac-cns" name="cns" inputmode="numeric" maxlength="18" data-digitos>
+                    <span class="dica">15 dígitos do Cartão Nacional de Saúde.</span>
+                </div>
+                <div class="campo">
+                    <label for="pac-nome">Nome</label>
+                    <input type="text" id="pac-nome" name="nome" maxlength="30" autocomplete="off">
+                    <span class="dica">Até 30 caracteres (limite do BPA). Abrevie os sobrenomes do meio se precisar.</span>
+                </div>
+                <div class="campo">
+                    <label for="pac-nascimento">Data de nascimento</label>
+                    <input type="date" id="pac-nascimento" name="dataNascimento">
+                </div>
+                <fieldset class="campo" id="pac-sexo">
+                    <legend>Sexo</legend>
+                    <div class="opcoes">
+                        <label><input type="radio" name="sexo" value="F"> Feminino</label>
+                        <label><input type="radio" name="sexo" value="M"> Masculino</label>
+                    </div>
+                </fieldset>
+                <div class="campo">
+                    <label for="pac-nacionalidade">Nacionalidade</label>
+                    <select id="pac-nacionalidade" name="nacionalidade"></select>
+                </div>
+                <div class="campo">
+                    <label for="pac-raca">Raça/cor</label>
+                    <select id="pac-raca" name="racaCor"><option value="">Escolha…</option></select>
+                </div>
+                <div class="campo largo" id="bloco-etnia" hidden>
+                    <label for="pac-etnia">Etnia</label>
+                    <select id="pac-etnia" name="etnia" disabled><option value="">Escolha…</option></select>
+                    <span class="dica">Exigida para paciente indígena de nacionalidade brasileira.</span>
+                </div>
+                <div class="campo">
+                    <label for="pac-municipio">Código IBGE do município de residência</label>
+                    <input type="text" id="pac-municipio" name="codigoMunicipio" inputmode="numeric" maxlength="7" data-digitos>
+                    <span class="dica">6 dígitos (sem o dígito verificador do IBGE).</span>
+                </div>
+                <div class="campo">
+                    <label for="pac-cep">CEP <span class="dica" style="display:inline">(opcional)</span></label>
+                    <input type="text" id="pac-cep" name="cep" inputmode="numeric" maxlength="9" data-digitos>
+                </div>
+                <div class="campo">
+                    <label for="pac-logradouro">Endereço <span class="dica" style="display:inline">(opcional)</span></label>
+                    <input type="text" id="pac-logradouro" name="logradouro" maxlength="30">
+                    <span class="dica">Até 30 caracteres. Ex.: R. das Flores.</span>
+                </div>
+                <div class="campo">
+                    <label for="pac-numero">Número <span class="dica" style="display:inline">(opcional)</span></label>
+                    <input type="text" id="pac-numero" name="numero" maxlength="5">
+                </div>
+                <div class="campo">
+                    <label for="pac-bairro">Bairro <span class="dica" style="display:inline">(opcional)</span></label>
+                    <input type="text" id="pac-bairro" name="bairro" maxlength="30">
+                </div>
+                <div class="campo">
+                    <label for="pac-telefone">Telefone com DDD <span class="dica" style="display:inline">(opcional)</span></label>
+                    <input type="text" id="pac-telefone" name="telefone" inputmode="tel" maxlength="15" data-digitos>
+                </div>
+            </div>
+            <div class="botoes">
+                <button type="submit" class="primario">Salvar paciente</button>
+                <button type="button" data-cancelar>Cancelar</button>
+            </div>
+        </form>
+    </main>
+</div>
+<script src="/js/api.js"></script>
+<script src="/js/layout.js"></script>
+<script src="/js/cadastro-lista.js"></script>
+<script src="/js/pacientes.js"></script>
+</body>
+</html>

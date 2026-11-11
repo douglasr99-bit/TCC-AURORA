@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Entrar — Aurora</title>
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+<main class="caixa-login">
+    <h1><span class="marca">AURORA</span> <span class="subtitulo">Registro da produção ambulatorial</span></h1>
+    <form id="form-login" novalidate>
+        <div class="mensagens" role="alert" aria-live="assertive" tabindex="-1"></div>
+        <div class="campo">
+            <label for="login">Login</label>
+            <input type="text" id="login" name="login" autocomplete="username" autocapitalize="none" required>
+        </div>
+        <div class="campo">
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" name="senha" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="primario">Entrar</button>
+    </form>
+</main>
+<script src="/js/api.js"></script>
+<script src="/js/login.js"></script>
+</body>
+</html>
