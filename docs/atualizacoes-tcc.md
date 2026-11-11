@@ -175,8 +175,8 @@ O código foi versionado com Git. A branch `main` recebe o trabalho concluído, 
 
 ### 25 Apêndices
 - **Apêndice A – Guia de implantação:** pronto em `docs/guia-implantacao.md`.
-- **Apêndice B – Manual do usuário:** ainda não existe.
-- **Apêndice C – Documentação da API REST:** ainda não existe. Pode ser montado a partir dos controladores.
+- **Apêndice B – Manual do usuário:** pronto em `docs/apendice-b-manual-usuario.md`.
+- **Apêndice C – Documentação da API REST:** pronto em `docs/apendice-c-api.md` (rotas conferidas contra os controladores e o `SecurityConfig`).
 
 ### 28 Checklist final
 - [x] Os testes possuem evidências (`docs/evidencias/`).
