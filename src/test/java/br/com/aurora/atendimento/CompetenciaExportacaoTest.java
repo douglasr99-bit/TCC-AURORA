@@ -138,7 +138,7 @@ class CompetenciaExportacaoTest {
     }
 
     @Test
-    @DisplayName("T11 Conferência: totais por modalidade, por procedimento e por profissional")
+    @DisplayName("T28 Conferência: totais por modalidade, por procedimento e por profissional")
     void conferencia() throws Exception {
         inserirAtendimentos(6);   // i=0,3 → BPA-I (qt 1,1); i=1,2,4,5 → BPA-C (qt 2,3,2,3)
         mvc.perform(get(url("/resumo")).with(user(responsavel)))
@@ -151,7 +151,7 @@ class CompetenciaExportacaoTest {
     }
 
     @Test
-    @DisplayName("T14 Gerar arquivo com a competência ABERTA → recusado com mensagem")
+    @DisplayName("T22 Gerar arquivo com a competência ABERTA → recusado com mensagem")
     void gerarComCompetenciaAberta() throws Exception {
         inserirAtendimentos(3);
         mvc.perform(post(url("/exportacao")).with(user(responsavel)).with(csrf()))
@@ -160,7 +160,7 @@ class CompetenciaExportacaoTest {
     }
 
     @Test
-    @DisplayName("T15 Reabrir sem motivo → erro; com motivo → registra a reabertura e volta para ABERTA")
+    @DisplayName("T27 Reabrir sem motivo → erro; com motivo → registra a reabertura e volta para ABERTA")
     void reabrir() throws Exception {
         mvc.perform(post(url("/fechamento")).with(user(responsavel)).with(csrf()))
                 .andExpect(status().isOk())
@@ -202,7 +202,7 @@ class CompetenciaExportacaoTest {
     }
 
     @Test
-    @DisplayName("T16 RNF07: 3.000 atendimentos geram o arquivo em até 10 s; histórico permite baixar de novo")
+    @DisplayName("T29 RNF07: 3.000 atendimentos geram o arquivo em até 10 s; histórico permite baixar de novo")
     void desempenhoEHistorico() throws Exception {
         inserirAtendimentos(3000);
         mvc.perform(post(url("/fechamento")).with(user(responsavel)).with(csrf())).andExpect(status().isOk());

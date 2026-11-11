@@ -17,7 +17,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 class ValidadorProcedimentoTest {
 
     @Test
-    @DisplayName("Todos os 5.024 procedimentos da Tabela Unificada do SIGTAP (09/2026) têm DV válido")
+    @DisplayName("T15b Todos os 5.024 procedimentos da Tabela Unificada do SIGTAP (09/2026) têm DV válido")
     void todosOsCodigosOficiais() throws IOException {
         List<String> codigos;
         try (var in = getClass().getResourceAsStream("/sigtap_202609_codigos_procedimento.txt")) {

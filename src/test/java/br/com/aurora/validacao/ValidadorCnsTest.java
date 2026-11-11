@@ -41,6 +41,7 @@ class ValidadorCnsTest {
     }
 
     @ParameterizedTest(name = "inválido: \"{0}\"")
+    @DisplayName("T14 CNS com dígito verificador errado, tamanho errado ou letras é recusado")
     @NullAndEmptySource
     @ValueSource(strings = {
             "100000000000008",   // dígito final trocado

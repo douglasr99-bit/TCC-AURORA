@@ -110,7 +110,7 @@ class AtendimentoIntegracaoTest {
     }
 
     @Test
-    @DisplayName("T11 Primeiro lançamento do mês cria a competência ABERTA")
+    @DisplayName("T18 Primeiro lançamento do mês cria a competência ABERTA")
     void primeiroLancamentoCriaCompetencia() throws Exception {
         assertThat(competencias.findByMesAno(MES)).isEmpty();
         mvc.perform(json(post("/api/atendimentos"), operador, bpaC(MES.atDay(10), "4")))
@@ -122,7 +122,7 @@ class AtendimentoIntegracaoTest {
     }
 
     @Test
-    @DisplayName("T09 Quantidade 0 ou negativa → 400 no campo quantidade")
+    @DisplayName("T16 Quantidade 0 ou negativa → 400 no campo quantidade")
     void quantidadeInvalida() throws Exception {
         for (String q : new String[] {"0", "-2"}) {
             mvc.perform(json(post("/api/atendimentos"), operador, bpaC(MES.atDay(10), q)))
@@ -145,7 +145,7 @@ class AtendimentoIntegracaoTest {
     }
 
     @Test
-    @DisplayName("Competência FECHADA recusa lançar, corrigir e excluir")
+    @DisplayName("T21 Competência FECHADA recusa lançar, corrigir e excluir")
     void competenciaFechada() throws Exception {
         String resp = mvc.perform(json(post("/api/atendimentos"), operador, bpaC(MES.atDay(10), "1")))
                 .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
@@ -166,7 +166,7 @@ class AtendimentoIntegracaoTest {
     }
 
     @Test
-    @DisplayName("RF10 Consultar, corrigir e excluir na competência aberta")
+    @DisplayName("T30 Consultar, corrigir e excluir na competência aberta")
     void consultarCorrigirExcluir() throws Exception {
         String resp = mvc.perform(json(post("/api/atendimentos"), operador, bpaC(MES.atDay(10), "1")))
                 .andReturn().getResponse().getContentAsString();

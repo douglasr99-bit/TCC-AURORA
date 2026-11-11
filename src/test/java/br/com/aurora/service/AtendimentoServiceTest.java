@@ -105,7 +105,7 @@ class AtendimentoServiceTest {
     }
 
     @Test
-    @DisplayName("T05 BPA-I sem paciente → erro no campo do paciente")
+    @DisplayName("T10 BPA-I sem paciente → erro no campo do paciente")
     void bpaISemPaciente() {
         var e = assertThrows(NegocioException.class,
                 () -> servicoEm(LocalDate.of(2026, 11, 11)).lancar(bpaI(LocalDate.of(2026, 11, 10), null, "J069", "01"), 1L));
@@ -114,7 +114,7 @@ class AtendimentoServiceTest {
     }
 
     @Test
-    @DisplayName("T06 BPA-C sem idade → erro no campo idade")
+    @DisplayName("T11 BPA-C sem idade → erro no campo idade")
     void bpaCSemIdade() {
         var e = assertThrows(NegocioException.class,
                 () -> servicoEm(LocalDate.of(2026, 11, 11)).lancar(bpaC(LocalDate.of(2026, 11, 10), null), 1L));
@@ -130,7 +130,7 @@ class AtendimentoServiceTest {
     }
 
     @Test
-    @DisplayName("T07 Procedimento que exige CID, sem CID → erro no campo cid")
+    @DisplayName("T12 Procedimento que exige CID, sem CID → erro no campo cid")
     void exigeCidSemCid() {
         var e = assertThrows(NegocioException.class,
                 () -> servicoEm(LocalDate.of(2026, 11, 11)).lancar(bpaI(LocalDate.of(2026, 11, 10), PAC, null, "01"), 1L));
@@ -154,7 +154,7 @@ class AtendimentoServiceTest {
     }
 
     @Test
-    @DisplayName("T10 Data do atendimento no futuro → erro no campo data")
+    @DisplayName("T17 Data do atendimento no futuro → erro no campo data")
     void dataNoFuturo() {
         var e = assertThrows(NegocioException.class,
                 () -> servicoEm(LocalDate.of(2026, 11, 11)).lancar(bpaC(LocalDate.of(2026, 11, 12), 30), 1L));
@@ -187,7 +187,7 @@ class AtendimentoServiceTest {
     }
 
     @Test
-    @DisplayName("T12a Atendimento de novembro lançado em dezembro entra na competência de novembro (aberta)")
+    @DisplayName("T19 Atendimento de novembro lançado em dezembro entra na competência de novembro (aberta)")
     void novembroLancadoEmDezembro() {
         var salvo = servicoEm(LocalDate.of(2026, 12, 3)).lancar(bpaC(LocalDate.of(2026, 11, 28), 40), 1L);
         verify(competenciaService).obterOuCriar(YearMonth.of(2026, 11));
@@ -195,7 +195,7 @@ class AtendimentoServiceTest {
     }
 
     @Test
-    @DisplayName("T12b Atendimento de novembro lançado em dezembro é recusado se novembro está FECHADA")
+    @DisplayName("T20 Atendimento de novembro lançado em dezembro é recusado se novembro está FECHADA")
     void novembroFechado() {
         competencia.setSituacao(SituacaoCompetencia.FECHADA);
         var e = assertThrows(NegocioException.class,

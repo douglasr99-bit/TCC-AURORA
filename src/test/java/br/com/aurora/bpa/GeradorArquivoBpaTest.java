@@ -92,7 +92,7 @@ class GeradorArquivoBpaTest {
     }
 
     @Test
-    @DisplayName("T13a Cada linha tem o tamanho exato do layout e termina em CR LF; arquivo só com ASCII")
+    @DisplayName("T23 Cada linha tem o tamanho exato do layout e termina em CR LF; arquivo só com ASCII")
     void tamanhosEAscii() {
         var ana = profissional("Ana", "100000000000007", "225142");
         var arquivo = GeradorArquivoBpa.gerar(estabelecimento(), NOV, List.of(
@@ -112,7 +112,7 @@ class GeradorArquivoBpaTest {
     }
 
     @Test
-    @DisplayName("T13b Cabeçalho com os dados do estabelecimento, totais e campo de controle")
+    @DisplayName("T24 Cabeçalho com os dados do estabelecimento, totais e campo de controle")
     void cabecalho() {
         var ana = profissional("Ana", "100000000000007", "225142");
         var proc = procedimento("0101010010", Modalidade.BPA_C);
@@ -144,7 +144,7 @@ class GeradorArquivoBpaTest {
     }
 
     @Test
-    @DisplayName("T13c BPA-C consolida por CBO, procedimento e idade somando as quantidades")
+    @DisplayName("T25 BPA-C consolida por CBO, procedimento e idade somando as quantidades")
     void consolidacaoBpaC() {
         var ana = profissional("Ana", "100000000000007", "225142");
         var bia = profissional("Bia", "100000000080000", "225142");     // mesmo CBO, outra pessoa
@@ -185,7 +185,7 @@ class GeradorArquivoBpaTest {
     }
 
     @Test
-    @DisplayName("T13d BPA-I campo a campo; textos em maiúsculas sem acento; número vazio vira SN")
+    @DisplayName("T26 BPA-I campo a campo; textos em maiúsculas sem acento; número vazio vira SN")
     void registroBpaI() {
         var ana = profissional("Ana", "100000000000007", "225142");
         var arquivo = GeradorArquivoBpa.gerar(estabelecimento(), NOV, List.of(
@@ -257,7 +257,7 @@ class GeradorArquivoBpaTest {
     }
 
     @Test
-    @DisplayName("Paciente indígena: etnia no registro (inclusive código X999 da tabela do SIA)")
+    @DisplayName("T31 Paciente indígena: etnia no registro (inclusive código X999 da tabela do SIA)")
     void etnia() {
         Paciente p = paciente();
         p.setRacaCor("05");
