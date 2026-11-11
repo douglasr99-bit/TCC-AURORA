@@ -1,0 +1,639 @@
+UNIVERSIDADE DE FRANCA
+CIÊNCIA DA COMPUTAÇÃO
+
+
+
+DOUGLAS RODRIGUES SANTOS
+
+
+
+
+
+DESENVOLVIMENTO DE UM SISTEMA PARA REGISTRO DA PRODUÇÃO AMBULATORIAL EM UNIDADES DE SAÚDE: AURORA
+
+
+
+
+
+FRANCA – SP
+2026
+
+
+UNIVERSIDADE DE FRANCA
+CIÊNCIA DA COMPUTAÇÃO
+
+
+
+DOUGLAS RODRIGUES SANTOS
+
+
+
+
+
+DESENVOLVIMENTO DE UM SISTEMA PARA REGISTRO DA PRODUÇÃO AMBULATORIAL EM UNIDADES DE SAÚDE: AURORA
+
+
+
+TRABALHO DE CONCLUSÃO DE CURSO APRESENTADO AO CURSO DE CIÊNCIA DA COMPUTAÇÃO, COMO REQUISITO PARA A APROVAÇÃO NA ETAPA PRELIMINAR DE CIÊNCIA DA COMPUTAÇÃO PARA O SEMESTRE 2026.2.
+
+ORIENTADOR: PROF. EULLER DA SILVA FERREIRA
+
+
+
+
+
+FRANCA – SP
+2026
+
+
+SUMÁRIO
+
+1 – IDENTIFICAÇÃO DO PROJETO
+2 – INTRODUÇÃO
+3 – PROBLEMA
+4 – JUSTIFICATIVA
+5 – OBJETIVOS
+6 – FUNDAMENTAÇÃO TEÓRICA
+7 – LEVANTAMENTO DE REQUISITOS
+8 – METODOLOGIA
+9 – TECNOLOGIAS E FERRAMENTAS
+10 – ARQUITETURA DA SOLUÇÃO
+11 – MODELAGEM DO SISTEMA
+12 – MODELAGEM DO BANCO DE DADOS
+13 – PROTOTIPAÇÃO E INTERFACE
+14 – DESENVOLVIMENTO E IMPLEMENTAÇÃO
+15 – VERSIONAMENTO E REPOSITÓRIO
+16 – TESTES E VALIDAÇÃO
+17 – RESULTADOS
+18 – DISCUSSÃO DOS RESULTADOS
+19 – SEGURANÇA, PRIVACIDADE E ÉTICA
+20 – LIMITAÇÕES DO PROJETO
+21 – TRABALHOS FUTUROS
+22 – CONCLUSÃO
+23 – CRONOGRAMA
+24 – REFERÊNCIAS
+25 – APÊNDICES
+26 – ANEXOS
+27 – REGISTRO DE CONTRIBUIÇÕES DA EQUIPE
+28 – CHECKLIST FINAL
+
+
+
+1 IDENTIFICAÇÃO DO PROJETO
+
+1.1 TÍTULO
+	Desenvolvimento de um sistema para registro da produção ambulatorial em unidades de saúde: Aurora.
+
+1.2 ÁREA DO PROJETO
+	Engenharia de Software, com ênfase em Desenvolvimento Web e Banco de Dados.
+
+1.3 RESUMO DO PROJETO
+	Em unidades de saúde que não dispõem de um sistema próprio de registro, os atendimentos realizados ao longo do mês são anotados em planilhas e, ao final de cada competência, digitados manualmente no Boletim de Produção Ambulatorial (BPA) para gerar o arquivo de produção enviado ao Sistema de Informações Ambulatoriais do SUS (SIA/SUS). Essa transcrição gera retrabalho e está sujeita a erros de digitação, que podem resultar em glosas e na perda de recursos públicos. Diante desse cenário, este trabalho propõe o desenvolvimento do Aurora, um sistema no qual a unidade registra os atendimentos no dia a dia, com validação dos dados no momento do lançamento, e, ao final da competência, exporta a produção no formato BPA para validação no SIA. O sistema será construído em arquitetura cliente-servidor, operando prioritariamente em rede local, com Java e Spring Boot no backend, PostgreSQL como banco de dados, Spring Data JPA e Hibernate para persistência e HTML5, CSS3 e JavaScript na interface. Espera-se eliminar a digitação manual da produção, reduzir os erros de registro e contribuir para o recebimento correto dos recursos pelas unidades de saúde e, indiretamente, para a melhoria dos serviços oferecidos à população.
+
+2 INTRODUÇÃO
+	As unidades de saúde que atendem pelo Sistema Único de Saúde (SUS) precisam informar ao Ministério da Saúde, a cada competência, a sua produção ambulatorial, isto é, os atendimentos e procedimentos realizados. Esse registro é feito por meio do Boletim de Produção Ambulatorial (BPA), cujo arquivo é validado e processado pelo Sistema de Informações Ambulatoriais do SUS (SIA/SUS) e serve de base para o cálculo dos valores devidos a cada estabelecimento (BRASIL, 2007). Na prática, porém, os atendimentos podem ser anotados em controles paralelos, como planilhas, e digitados no BPA somente ao final da competência, o que torna o registro tardio, repetitivo e sujeito a erros.
+	A motivação para este trabalho surgiu da experiência do autor em estágio em uma empresa de consultoria em gestão de unidades de saúde. Nesse estágio, as unidades atendidas registravam sua produção em planilhas, que precisavam ser digitadas manualmente no BPA para a geração do arquivo de produção, tarefa que representava retrabalho e estava sujeita a erros de transcrição. Observou-se também grande terceirização das atividades, gerando confusão e perda de informações, além de tempo de resposta lento, uma vez que a entidade responsável também recorria a serviços terceirizados para executar seu trabalho.
+	Diante desse cenário, propõe-se o Aurora, um sistema no qual a própria unidade registra os atendimentos à medida que eles ocorrem, com validação dos dados no momento do lançamento, e que, ao final de cada competência, gera o arquivo de produção no formato BPA para validação no SIA. O sistema será desenvolvido em arquitetura cliente-servidor, operando prioritariamente em rede local, com Java e Spring Boot no backend, PostgreSQL como banco de dados e HTML, CSS e JavaScript na interface.
+
+3 PROBLEMA
+	Em unidades de saúde que não dispõem de um sistema próprio de registro, os atendimentos realizados ao longo do mês são anotados em planilhas e, ao final de cada competência, precisam ser digitados manualmente no BPA para gerar o arquivo de produção enviado ao SIA. Essa transcrição representa retrabalho e está sujeita a erros de digitação, que muitas vezes só são identificados na validação pelo SIA, quando a correção já é mais difícil e pode resultar em glosas e perda de recursos. Além disso, a operação dos sistemas oficiais exige conhecimento técnico específico, o que leva à dependência de suporte terceirizado.
+	Diante desse cenário, a questão que orienta este trabalho é: como desenvolver um sistema que permita às unidades de saúde registrar os atendimentos no dia a dia e gerar automaticamente o arquivo de produção no formato BPA, reduzindo o retrabalho e os erros de digitação?
+
+4 JUSTIFICATIVA
+	Do ponto de vista social, o projeto contribui para a qualidade das informações de produção ambulatorial enviadas ao SUS. Como o cálculo dos valores devidos a cada estabelecimento é efetuado com base na produção ambulatorial realizada (BRASIL, 2007), erros ou omissões nesse registro podem comprometer o recebimento de recursos públicos destinados à saúde. Em estabelecimentos sob gestão estadual do Ceará, por exemplo, Gomes, Nascimento e Rodrigues (2024) identificaram que inconsistências na alimentação dos sistemas e a desatualização do Cadastro Nacional de Estabelecimentos de Saúde (CNES) estavam entre as principais causas de glosas, que somaram milhões de reais em apenas dois anos. Como consequência, a população pode ser indiretamente afetada pela redução da capacidade de investimento em infraestrutura, equipamentos e serviços de saúde. Os principais beneficiados são os profissionais responsáveis pelo registro da produção, os gestores das unidades e dos municípios e, sobretudo, a população usuária do SUS, que pode ser favorecida por uma melhor aplicação dos recursos públicos. O sistema pode ser utilizado tanto por unidades públicas quanto por unidades privadas conveniadas ou contratadas pelo SUS, que também informam sua produção ambulatorial.
+	Do ponto de vista profissional e operacional, a experiência do autor em uma empresa de consultoria em gestão de unidades de saúde mostrou que o registro da produção em planilhas obriga a uma segunda etapa de digitação no BPA, repetitiva e sujeita a erros. Mostrou também que a complexidade dos sistemas leva à dependência de suporte terceirizado, inclusive com acesso remoto à máquina do usuário para investigar erros, o que torna o tempo de resposta elevado e a gestão mais cara. Ao permitir o registro dos atendimentos no dia a dia, com tratamento claro de erros, e a exportação automática da produção, o Aurora elimina essa etapa de transcrição e reduz a dependência de conhecimento técnico especializado.
+	Do ponto de vista acadêmico e tecnológico, o trabalho integra conhecimentos de Engenharia de Software, Banco de Dados, Programação Orientada a Objetos, Análise e Projeto de Sistemas e Redes de Computadores na construção de um sistema aplicado a um problema real, incluindo a geração de um arquivo em conformidade com um layout oficial do Ministério da Saúde. A operação prioritária em rede local garante a continuidade do registro dos atendimentos mesmo sem acesso à internet, e o envio da produção é feito posteriormente, a partir do arquivo gerado pelo sistema.
+
+5 OBJETIVOS
+
+5.1 OBJETIVO GERAL
+	Desenvolver o Aurora, um sistema para unidades de saúde que permita registrar os atendimentos realizados no dia a dia e, ao final de cada competência, gerar o arquivo de produção ambulatorial no formato BPA, para validação no SIA/SUS, eliminando a digitação manual da produção a partir de planilhas.
+
+5.2 OBJETIVOS ESPECÍFICOS
+    • Levantar os requisitos funcionais e não funcionais do sistema, com base no processo de registro da produção ambulatorial, nos campos exigidos pelo BPA e na experiência de estágio do autor.
+    • Modelar o sistema e o banco de dados, por meio de casos de uso, diagrama de classes e modelo relacional.
+    • Projetar uma interface intuitiva para o lançamento dos atendimentos, com mensagens de erro claras, e prototipá-la antes da implementação.
+    • Implementar o backend em Java com Spring Boot e PostgreSQL, e a interface web em HTML, CSS e JavaScript.
+    • Implementar a validação dos dados no momento do lançamento, conforme as regras do layout de exportação do BPA.
+    • Implementar a geração do arquivo de produção por competência, no layout definido pelo DATASUS.
+    • Garantir a operação em rede local, com continuidade do registro dos atendimentos sem acesso à internet.
+    • Testar o sistema e validar o arquivo gerado quanto à conformidade com o layout de exportação do BPA.
+
+
+6 FUNDAMENTAÇÃO TEÓRICA
+	Esta seção apresenta os conceitos necessários à compreensão do projeto, abrangendo o registro da produção ambulatorial no SUS, os princípios de usabilidade aplicados ao tratamento de erros e as tecnologias empregadas no desenvolvimento do Aurora.
+
+6.1 Conceitos principais
+
+6.1.1 Produção ambulatorial (SIA/SUS e BPA)
+	O Sistema de Informações Ambulatoriais do SUS (SIA/SUS) registra os atendimentos, procedimentos e tratamentos realizados em cada estabelecimento de saúde no âmbito ambulatorial e processa essa produção de forma descentralizada (BRASIL, 2007). O registro é feito por meio do Boletim de Produção Ambulatorial (BPA), instrumento utilizado para reunir e digitar a produção dos estabelecimentos (BRASIL, 2013), que depois é importada, validada e processada pelo SIA (BRASIL, 2016). Essa informação tem impacto financeiro direto, pois o cálculo dos valores devidos a cada estabelecimento é efetuado com base na produção ambulatorial realizada (BRASIL, 2007).
+	O arquivo de produção segue um layout de texto de largura fixa definido pelo DATASUS, composto por um registro de cabeçalho e por registros de produção em duas modalidades: o BPA consolidado (BPA-C), que agrupa os procedimentos por quantidade, e o BPA individualizado (BPA-I), que identifica o paciente atendido em cada procedimento (BRASIL, 2026). Cada registro informa, entre outros dados, o código CNES do estabelecimento, a competência, o procedimento realizado e a ocupação (CBO) do profissional (BRASIL, 2026). É nesse layout que o Aurora gera o arquivo de produção ao final de cada competência.
+
+6.1.2 Cadastro Nacional de Estabelecimentos de Saúde (CNES)
+	O Cadastro Nacional de Estabelecimentos de Saúde (CNES), instituído pela Portaria nº 1.646/2015, constitui documento público e sistema de informação oficial sobre os estabelecimentos de saúde do país, aplicando-se independentemente de sua natureza jurídica ou de integrarem o Sistema Único de Saúde (BRASIL, 2015). O cadastramento e a manutenção dos dados no CNES são obrigatórios para que qualquer estabelecimento de saúde possa funcionar em território nacional (BRASIL, 2015). No BPA, o código CNES identifica o estabelecimento responsável pela produção informada (BRASIL, 2026). A qualidade desse cadastro tem efeitos práticos: em estabelecimentos públicos do Ceará, a desatualização do CNES esteve entre as principais causas de glosas (GOMES; NASCIMENTO; RODRIGUES, 2024).
+
+6.1.3 Fragmentação dos sistemas de informação em saúde
+	Na gestão em saúde, ainda persiste o legado de aplicações monolíticas, e os dados produzidos nem sempre retroalimentam os repositórios estaduais e municipais de forma integrada, automatizada e no tempo oportuno (CONASS, 2023). Nesse cenário, as unidades podem recorrer a controles paralelos, como planilhas, para registrar sua rotina, o que exige a posterior transcrição dos dados para os sistemas oficiais e aumenta a possibilidade de inconsistências entre as informações.
+
+6.1.4 Usabilidade e tratamento de erros
+	Entre as heurísticas de usabilidade propostas por Jakob Nielsen, uma estabelece que a interface deve ajudar os usuários a reconhecer, diagnosticar e se recuperar de erros. Neusesser e Sunwall (2023) detalham esse princípio: as mensagens de erro devem ser visíveis e próximas ao elemento afetado, usar linguagem simples, sem jargão ou códigos obscuros, descrever o problema com precisão e sugerir como corrigi-lo, preservando os dados já informados pelo usuário. Esses princípios orientam o tratamento de erros no Aurora, cujo público é composto principalmente por usuários sem conhecimento técnico especializado.
+
+6.2 Tecnologias e abordagens relacionadas
+
+6.2.1 Engenharia de software e levantamento de requisitos
+	A engenharia de software é a disciplina que trata de todos os aspectos da produção de software, desde a especificação até a manutenção do sistema (SOMMERVILLE, 2018). Uma de suas etapas centrais é o levantamento de requisitos, que distingue os requisitos funcionais, ou seja, os serviços que o sistema deve oferecer, dos requisitos não funcionais, que são restrições sobre esses serviços, como desempenho, segurança e usabilidade (SOMMERVILLE, 2018). A modelagem do sistema, por meio de diagramas como os da UML, permite representar a estrutura e o comportamento do software antes de sua implementação (PRESSMAN; MAXIM, 2021).
+
+6.2.2 Arquitetura cliente-servidor e redes locais
+	No modelo cliente-servidor, os dados e o processamento principal ficam em um computador servidor, enquanto as máquinas clientes enviam requisições e recebem respostas por meio da rede (TANENBAUM; WETHERALL, 2011). No Aurora, esse modelo é aplicado sobre a rede local da unidade de saúde, o que permite manter o registro dos atendimentos mesmo sem acesso à internet.
+
+6.2.3 Linguagem Java e orientação a objetos
+	Java é uma linguagem de programação orientada a objetos, cujos programas são executados sobre uma máquina virtual, o que garante portabilidade entre diferentes sistemas operacionais (JANDL JUNIOR, 2013). A orientação a objetos organiza o software em classes que reúnem dados e comportamentos, o que favorece a modularidade e a reutilização de código (JANDL JUNIOR, 2013).
+
+6.2.4 Spring Boot
+	O Spring Boot é um framework que facilita a criação de aplicações Java independentes e prontas para produção, por meio de configurações automáticas que reduzem o esforço de configuração inicial (SPRING, 2026a).
+
+6.2.5 Mapeamento objeto-relacional (JPA e Hibernate)
+	O mapeamento objeto-relacional (ORM) é a técnica que associa as classes de uma aplicação orientada a objetos às tabelas de um banco de dados relacional, permitindo manipular os dados por meio de objetos (HIBERNATE, 2026). O Hibernate é uma implementação dessa técnica para Java, e o Spring Data JPA simplifica a criação da camada de acesso a dados, reduzindo a quantidade de código repetitivo (SPRING, 2026b).
+
+6.2.6 Banco de dados relacional (PostgreSQL)
+	O PostgreSQL é um sistema gerenciador de banco de dados objeto-relacional de código aberto, que organiza os dados em tabelas relacionadas e utiliza a linguagem SQL para consultas e manipulação (POSTGRESQL, 2026).
+
+6.2.7 Desenvolvimento web (HTML, CSS e JavaScript)
+	O desenvolvimento de interfaces web se apoia em três tecnologias complementares: o HTML, responsável pela estrutura das páginas, o CSS, responsável pela apresentação visual, e o JavaScript, responsável pelo comportamento interativo (PUREWAL, 2014).
+
+6.2.8 Autenticação e controle de acesso (Spring Security)
+	O Spring Security é um framework que fornece autenticação, autorização e proteção contra ataques comuns para aplicações desenvolvidas com Spring (SPRING, 2026c). A autenticação verifica a identidade do usuário, enquanto a autorização determina quais recursos ele pode acessar. Para o armazenamento de senhas, o framework recomenda o uso de funções de hash adaptativas de sentido único, como o BCrypt, de modo que a senha original não fique armazenada no banco de dados (SPRING, 2026c).
+
+6.3 Trabalhos relacionados
+	O próprio BPA, disponibilizado pelo DATASUS, é a ferramenta oficial para a digitação da produção ambulatorial (BRASIL, 2013). Na experiência do autor, porém, ele era utilizado apenas na etapa final, para a digitação de uma produção previamente anotada em planilhas. O Aurora se diferencia por trazer o registro para a rotina da unidade, com validação no momento do lançamento, e por gerar o arquivo no mesmo layout aceito pelo SIA, sem substituir os sistemas oficiais.
+	Ferreira Filho (2022) desenvolveu um sistema de gestão e controle de atividades em Unidade de Pronto Atendimento, com foco na triagem de pacientes pelo Protocolo de Manchester, utilizando Python com Django no backend e Vue.js na interface. O trabalho tem caráter assistencial e não trata do registro da produção ambulatorial nem da geração do arquivo BPA, aspectos centrais do Aurora.
+	No âmbito público, o Conselho Nacional de Secretários de Saúde descreve os aplicativos AGHU e AGHUse, soluções públicas de gestão hospitalar do SUS que, em alguns casos, se integram a outros sistemas por meio de importação de arquivos (CONASS, 2023). Essas soluções atendem à rotina hospitalar, enquanto o Aurora se concentra no registro da produção ambulatorial de unidades de saúde.
+
+Quadro 1 – Comparação entre trabalhos relacionados e o Aurora
+
+Trabalho | Foco | Registro dos atendimentos na rotina | Validação no lançamento | Geração do arquivo BPA | Diferença para o Aurora
+BPA (BRASIL, 2013) | Digitação da produção | Não (digitação posterior) | [verificar] | Sim | Usado só no fim da competência
+Ferreira Filho (2022) | Triagem em UPA | Sim (assistencial) | Não informado | Não | Assistencial, não trata da produção
+AGHU/AGHUse (CONASS, 2023) | Gestão hospitalar | [verificar] | [verificar] | [verificar] | Voltado a hospitais
+Aurora | Registro da produção ambulatorial | Sim | Sim | Sim | —
+
+
+7 LEVANTAMENTO DE REQUISITOS
+
+7.1 Público-alvo
+	O Aurora destina-se a unidades de saúde que informam sua produção ambulatorial ao SUS por meio do BPA, sejam públicas ou privadas conveniadas ou contratadas pelo SUS, em especial aquelas que não dispõem de sistema próprio para o registro dos atendimentos e recorrem a controles paralelos, como planilhas.
+
+7.2 Perfis de usuários
+    • Administrador: configura os dados do estabelecimento, gerencia os usuários do sistema e mantém as tabelas de apoio, como a de procedimentos.
+    • Operador: profissional responsável pelo registro dos atendimentos no dia a dia, como recepcionista ou auxiliar administrativo.
+    • Responsável pela produção: confere a produção da competência, realiza o fechamento e gera o arquivo BPA para envio ao SIA.
+	Em unidades de menor porte, um mesmo usuário pode acumular mais de um perfil.
+
+7.3 Requisitos funcionais
+
+Código | Requisito | Descrição | Prioridade
+RF01 | Autenticar usuário | Permitir o acesso ao sistema mediante login e senha. | Alta
+RF02 | Gerenciar usuários | Permitir ao administrador cadastrar, editar e desativar usuários e definir seus perfis, inclusive mais de um perfil por usuário. | Média
+RF03 | Cadastrar estabelecimento | Registrar os dados do estabelecimento exigidos no cabeçalho do BPA, como código CNES, nome, sigla, CNPJ e órgão de destino. | Alta
+RF04 | Cadastrar profissionais | Registrar os profissionais com nome, CNS e ocupação (CBO). | Alta
+RF05 | Cadastrar pacientes | Registrar os pacientes com os dados exigidos pelo BPA individualizado, como CNS, nome, data de nascimento, sexo, raça/cor e município de residência. | Alta
+RF06 | Manter tabela de procedimentos | Permitir o cadastro manual dos procedimentos utilizados pela unidade, com código, descrição e modalidade de registro (BPA-C ou BPA-I). | Alta
+RF07 | Lançar atendimento | Registrar cada atendimento com data, profissional, procedimento, quantidade e, nos procedimentos de BPA individualizado, paciente e CID-10. O atendimento é associado à competência do mês de sua data, que é criada automaticamente, com situação aberta, no primeiro lançamento do mês. | Alta
+RF08 | Validar lançamento | Verificar, no momento do lançamento, campos obrigatórios, formatos e regras do layout do BPA, como o dígito verificador do código do procedimento. | Alta
+RF09 | Exibir mensagens de erro claras | Indicar junto ao campo afetado o problema encontrado e como corrigi-lo, sem perder os dados já digitados. | Alta
+RF10 | Consultar e corrigir atendimentos | Permitir consultar, editar e excluir atendimentos da competência em aberto. | Alta
+RF11 | Conferir produção da competência | Exibir um resumo da produção da competência, com totais por procedimento e por profissional, antes da exportação. | Média
+RF12 | Fechar competência | Encerrar a competência, impedindo novos lançamentos e alterações. | Média
+RF13 | Gerar arquivo BPA | Gerar o arquivo de produção da competência, com registros de BPA consolidado e individualizado, no layout de exportação do BPA definido pelo DATASUS. | Alta
+RF14 | Manter histórico de exportações | Registrar os arquivos gerados, com data, competência e usuário responsável. | Baixa
+RF15 | Reabrir competência | Permitir ao responsável pela produção reabrir uma competência fechada para correção, registrando a data, o usuário e o motivo da reabertura. | Média
+
+7.4 Requisitos não funcionais
+
+Código | Requisito | Descrição | Prioridade
+RNF01 | Usabilidade | O sistema deve poder ser operado por usuários sem conhecimento técnico, com mensagens de erro em linguagem simples. | Alta
+RNF02 | Operação em rede local | O sistema deve funcionar na rede local da unidade, sem depender de acesso à internet. | Alta
+RNF03 | Conformidade com o layout | O arquivo gerado deve seguir integralmente o layout de exportação do BPA vigente. | Alta
+RNF04 | Segurança de acesso | As senhas devem ser armazenadas de forma criptografada (hash), e cada funcionalidade deve respeitar o perfil do usuário. | Alta
+RNF05 | Privacidade dos dados | Os dados pessoais dos pacientes devem ser tratados conforme a Lei Geral de Proteção de Dados Pessoais (BRASIL, 2018). | Alta
+RNF06 | Compatibilidade | O sistema deve funcionar nas versões atuais dos navegadores Google Chrome, Mozilla Firefox e Microsoft Edge. | Média
+RNF07 | Desempenho | A geração do arquivo de uma competência com até 3.000 atendimentos deve ocorrer em até 10 segundos. | Média
+RNF08 | Integridade dos dados | Os dados devem ser armazenados em banco de dados relacional, com rotina de cópia de segurança. | Média
+RNF09 | Comunicação segura | A comunicação entre as estações de trabalho e o servidor deve ocorrer por HTTPS, com certificado próprio instalado como confiável nas estações. | Alta
+
+
+8 METODOLOGIA
+	Este trabalho caracteriza-se como uma pesquisa aplicada, voltada ao desenvolvimento de um sistema para resolver um problema prático observado pelo autor durante o estágio. O desenvolvimento segue o modelo incremental, no qual o sistema é construído em uma série de versões, cada uma acrescentando funcionalidades à anterior (SOMMERVILLE, 2018). Esse modelo permite testar cada parte do sistema à medida que é concluída e ajustar o planejamento ao longo do projeto. O trabalho está organizado nas etapas descritas a seguir.
+	Etapa 1 – Levantamento de requisitos. Os requisitos foram definidos a partir da experiência do autor no estágio e da documentação oficial do DATASUS, em especial o layout de exportação do BPA, os formulários de BPA consolidado e individualizado e os manuais operacionais do BPA e do SIA (BRASIL, 2013, 2016, 2026). Não foram coletados dados de pacientes ou de unidades reais.
+	Etapa 2 – Modelagem. A partir dos requisitos, serão elaborados, com a ferramenta draw.io, os diagramas de casos de uso, de classes, de sequência e de atividades, além dos modelos conceitual e lógico do banco de dados.
+	Etapa 3 – Prototipação. As telas principais, como o lançamento de atendimentos e a geração do arquivo, serão prototipadas antes da implementação, seguindo os princípios de tratamento de erros apresentados na seção 6.1.4.
+	Etapa 4 – Implementação. O sistema será implementado em três incrementos: (1) autenticação, perfis de usuário e cadastros de estabelecimento, profissionais, pacientes e procedimentos; (2) lançamento de atendimentos com validação dos dados; e (3) conferência, fechamento da competência e geração do arquivo BPA. O desenvolvimento utilizará Java com Spring Boot, com gerenciamento de dependências e build pelo Maven, PostgreSQL como banco de dados e HTML, CSS e JavaScript na interface, tendo o Visual Studio Code como ambiente de desenvolvimento. O código será versionado com Git e hospedado no GitHub.
+	Etapa 5 – Testes e validação. Serão realizados testes unitários com JUnit, com foco nas regras de validação dos lançamentos e na geração do arquivo, e testes funcionais das telas principais. O arquivo gerado será validado quanto à conformidade com o layout de exportação do BPA, conferindo-se a estrutura dos registros e o tamanho e a posição de cada campo. Os testes utilizarão exclusivamente dados fictícios, de modo que nenhum dado pessoal real seja tratado durante o desenvolvimento.
+	Etapa 6 – Documentação. Os resultados de cada etapa serão registrados neste documento, conforme o cronograma apresentado na seção 23.
+
+
+9 TECNOLOGIAS E FERRAMENTAS
+	O Quadro 2 apresenta as tecnologias e ferramentas utilizadas no desenvolvimento do Aurora e a finalidade de cada uma no projeto.
+
+Quadro 2 – Tecnologias e ferramentas utilizadas
+
+Tecnologia/Ferramenta | Finalidade no projeto
+Java 25 (LTS) | Linguagem principal, responsável pelas regras de negócio, pela validação dos lançamentos e pela geração do arquivo BPA.
+Spring Boot 4.1 | Framework do backend, responsável pelo processamento das requisições e pela comunicação com o banco de dados.
+Spring Security | Autenticação dos usuários, controle de acesso por perfil e armazenamento das senhas com hash (BCrypt).
+Maven 3.9 | Gerenciamento das dependências e do processo de build do backend.
+Spring Data JPA e Hibernate | Persistência dos dados, por meio do mapeamento entre as classes Java e as tabelas do banco de dados.
+PostgreSQL 18 | Armazenamento dos dados do estabelecimento, profissionais, pacientes, procedimentos, atendimentos e competências.
+HTML5, CSS3 e JavaScript | Construção da interface web, responsável pela estrutura, pela apresentação visual e pela interação com o usuário, incluindo a exibição das mensagens de erro.
+JUnit | Testes unitários das regras de validação e da geração do arquivo BPA.
+Visual Studio Code | Ambiente de desenvolvimento.
+Git e GitHub | Versionamento e hospedagem do código-fonte.
+draw.io | Elaboração dos diagramas UML (casos de uso, classes, sequência e atividades), do diagrama de arquitetura e dos modelos conceitual e lógico do banco de dados.
+
+	A escolha de Java com Spring Boot deve-se à robustez da linguagem, à sua ampla utilização em aplicações corporativas e à integração do framework com as demais tecnologias do projeto, como o Spring Data JPA, o Spring Security e o JUnit. Foram adotadas a versão 25 do Java, a mais recente com suporte de longo prazo (LTS), e a linha 4.1 do Spring Boot, que recebe atualizações de segurança gratuitas durante todo o período de desenvolvimento do trabalho. As versões do Spring Data JPA, do Hibernate, do Spring Security e do JUnit são gerenciadas pelo próprio Spring Boot, o que garante a compatibilidade entre elas. O Spring Security foi adotado para atender aos requisitos de autenticação e segurança de acesso (RF01 e RNF04), evitando a implementação manual desses mecanismos. O PostgreSQL foi escolhido por ser um sistema gerenciador de banco de dados robusto e de código aberto. Além disso, todas as tecnologias e ferramentas adotadas são gratuitas, o que permite a implantação do sistema sem custos de licenciamento, aspecto relevante para unidades de saúde públicas, que dependem de recursos orçamentários limitados.
+
+
+10 ARQUITETURA DA SOLUÇÃO
+	O Aurora adota uma arquitetura cliente-servidor implantada na rede local da unidade de saúde, conforme apresentado na Figura 1. A aplicação é executada em um computador da unidade que atua como servidor e hospeda também o banco de dados, enquanto as demais estações de trabalho acessam o sistema por meio do navegador web, sem necessidade de instalação de software adicional e sem dependência de acesso à internet.
+
+[INSERIR FIGURA: arquitetura_aurora.png]
+Figura 1 – Arquitetura geral da solução. Fonte: Elaborado pelo autor.
+
+	A interface do usuário, desenvolvida em HTML5, CSS3 e JavaScript, é disponibilizada pela própria aplicação Spring Boot e se comunica com o backend por meio de requisições HTTPS a uma API REST, trocando dados no formato JSON. Como a interface e a API são servidas pela mesma aplicação, não é necessária configuração adicional para a comunicação entre origens distintas.
+	Como o sistema trata dados pessoais de pacientes, a comunicação entre as estações e o servidor é protegida pelo protocolo TLS, que garante a confidencialidade e a integridade dos dados transmitidos (TANENBAUM; WETHERALL, 2011). Para isso, é gerado um certificado próprio para o servidor da unidade, identificado por seu nome ou endereço na rede local, e esse certificado é instalado como confiável nas estações de trabalho. Dessa forma, senhas e dados de pacientes não trafegam em texto aberto na rede, sem que seja necessário adquirir um certificado de uma autoridade certificadora comercial.
+	O backend é organizado em camadas, de modo que cada camada tenha uma responsabilidade definida e se comunique apenas com a camada adjacente (SOMMERVILLE, 2018):
+    • Segurança: o Spring Security intercepta todas as requisições, verifica se o usuário está autenticado e se o seu perfil permite acessar o recurso solicitado. A autenticação é realizada por login e senha, com a sessão do usuário mantida no servidor, e as senhas são armazenadas com hash BCrypt.
+    • Controle: os controladores REST recebem as requisições da interface, encaminham-nas à camada de serviço e devolvem as respostas, incluindo as mensagens de erro de validação associadas a cada campo.
+    • Serviço: concentra as regras de negócio do sistema, como os cadastros, a validação dos lançamentos conforme as regras do layout do BPA, o controle e o fechamento da competência e a geração do arquivo de produção.
+    • Persistência: os repositórios do Spring Data JPA, com o Hibernate, realizam o acesso ao banco de dados PostgreSQL por meio de JDBC.
+	Ao final da competência, o responsável pela produção solicita a geração do arquivo BPA. O arquivo é gerado pela camada de serviço, registrado no histórico de exportações e disponibilizado para download pelo navegador. A importação desse arquivo no SIA/SUS é realizada pelo usuário, fora do Aurora, uma vez que o sistema não se comunica diretamente com sistemas externos.
+	Quanto ao armazenamento, todos os dados do sistema, inclusive o conteúdo dos arquivos BPA gerados, são mantidos no PostgreSQL. Dessa forma, uma única rotina de cópia de segurança do banco de dados preserva todas as informações do sistema, conforme o requisito RNF08.
+
+
+11 MODELAGEM DO SISTEMA
+
+11.1 Diagrama de casos de uso
+	A Figura 2 apresenta o diagrama de casos de uso do Aurora, elaborado a partir dos requisitos funcionais da seção 7.3. Os atores Administrador, Operador e Responsável pela produção correspondem aos perfis descritos na seção 7.2 e especializam o ator Usuário, que representa qualquer pessoa autenticada no sistema. Dessa forma, todos os perfis realizam o login, e um mesmo usuário pode acumular mais de um perfil.
+	O caso de uso Lançar atendimento inclui a validação do lançamento, uma vez que nenhum atendimento é registrado sem passar pelas regras do layout do BPA. Da mesma forma, a geração do arquivo BPA inclui o registro da exportação no histórico.
+
+[INSERIR FIGURA: casos_de_uso_aurora.png]
+Figura 2 – Diagrama de casos de uso. Fonte: Elaborado pelo autor.
+
+	O Quadro 3 relaciona cada caso de uso aos requisitos funcionais que ele atende.
+
+Quadro 3 – Relação entre casos de uso e requisitos funcionais
+
+Caso de uso | Requisitos funcionais
+Realizar login | RF01
+Gerenciar usuários | RF02
+Cadastrar estabelecimento | RF03
+Cadastrar profissionais | RF04
+Cadastrar pacientes | RF05
+Manter procedimentos | RF06
+Lançar atendimento | RF07
+Validar lançamento | RF08, RF09
+Consultar e corrigir atendimentos | RF10
+Conferir produção da competência | RF11
+Fechar competência | RF12
+Reabrir competência | RF15
+Gerar arquivo BPA | RF13
+Registrar exportação no histórico | RF14
+
+11.2 Diagrama de classes
+	A Figura 3 apresenta o diagrama de classes do domínio do Aurora, com as entidades persistidas no banco de dados e seus relacionamentos. As classes das camadas de controle e de serviço, descritas na seção 10, foram omitidas para manter o diagrama legível.
+
+[INSERIR FIGURA: classes_aurora.png]
+Figura 3 – Diagrama de classes do domínio. Fonte: Elaborado pelo autor.
+
+	A classe central é Atendimento, que representa cada procedimento lançado pela unidade. Cada atendimento pertence a uma Competencia, é realizado por um Profissional, refere-se a um Procedimento e é registrado por um Usuario. A associação com Paciente é opcional (0..1), pois somente os procedimentos de BPA individualizado exigem a identificação do paciente; nos procedimentos de BPA consolidado, o atendimento informa apenas a idade, campo exigido nessa modalidade. A modalidade de cada procedimento, definida pela enumeração Modalidade, determina em qual tipo de registro o atendimento será exportado, e o atributo exigeCid indica se o CID-10 é obrigatório.
+	A classe Competencia controla o período de registro, com a situação ABERTA ou FECHADA, e pode ter várias exportações (ExportacaoBpa), uma vez que o arquivo de uma competência pode ser gerado mais de uma vez. Cada exportação guarda o conteúdo do arquivo gerado, conforme a decisão de armazenamento apresentada na seção 10. Quando uma competência fechada precisa ser corrigida, por exemplo após a rejeição de registros no SIA, sua reabertura é registrada na classe ReaberturaCompetencia, com a data, o motivo e o usuário responsável, de modo que toda alteração em uma produção já fechada fique documentada. A classe Estabelecimento possui uma única instância por instalação e fornece os dados do cabeçalho do arquivo BPA.
+
+11.3 Diagrama de sequência
+	A Figura 4 apresenta o diagrama de sequência da geração do arquivo BPA, principal funcionalidade do sistema. O diagrama mostra a comunicação entre as camadas descritas na seção 10. A verificação de autenticação e de perfil realizada pelo Spring Security foi omitida para simplificar a representação, e os nomes das classes de controle e de serviço são indicativos.
+
+[INSERIR FIGURA: sequencia_geracao_bpa.png]
+Figura 4 – Diagrama de sequência da geração do arquivo BPA. Fonte: Elaborado pelo autor.
+
+	Ao receber a solicitação, o serviço consulta a competência e os dados do estabelecimento. Se a competência ainda estiver aberta, a geração é recusada e a interface exibe uma mensagem orientando o usuário a fechá-la, o que garante que o arquivo reflita uma produção já conferida. Se estiver fechada, o serviço busca os atendimentos da competência, monta o registro de cabeçalho e os registros de BPA consolidado e individualizado conforme o layout do DATASUS, grava a exportação no histórico e devolve o arquivo para download.
+
+11.4 Diagrama de atividades
+	A Figura 5 apresenta o diagrama de atividades do ciclo de uma competência no Aurora, desde o lançamento dos atendimentos até a aceitação do arquivo no SIA.
+
+[INSERIR FIGURA: atividades_competencia.png]
+Figura 5 – Diagrama de atividades do ciclo da competência. Fonte: Elaborado pelo autor.
+
+	A competência é criada automaticamente pelo sistema no primeiro lançamento de cada mês, sem necessidade de ação do usuário. Durante a competência, o operador lança os atendimentos, e cada lançamento é validado no momento do registro; em caso de erro, o sistema exibe a mensagem correspondente e o operador corrige os dados. Ao final do período, o responsável pela produção confere a produção, corrige eventuais inconsistências, fecha a competência e gera o arquivo BPA, que é importado no SIA fora do Aurora. Caso o SIA rejeite o arquivo, a competência é reaberta, os atendimentos são corrigidos e o ciclo de conferência, fechamento e geração é repetido.
+
+
+12 MODELAGEM DO BANCO DE DADOS
+
+12.1 Modelo conceitual
+	A Figura 6 apresenta o modelo conceitual do banco de dados, elaborado na notação entidade-relacionamento. As entidades correspondem às classes de domínio apresentadas na seção 11.2, e as cardinalidades indicam o número mínimo e máximo de ocorrências de cada entidade em cada relacionamento. Os atributos de cada entidade são detalhados no modelo lógico e no dicionário de dados.
+
+[INSERIR FIGURA: modelo_conceitual_aurora.png]
+Figura 6 – Modelo conceitual do banco de dados. Fonte: Elaborado pelo autor.
+
+	A entidade Atendimento concentra os relacionamentos do modelo: cada atendimento é registrado por um usuário, realizado por um profissional, refere-se a um procedimento e está contido em uma competência, podendo ou não estar associado a um paciente. A entidade Estabelecimento não se relaciona com as demais, pois cada instalação do sistema atende a uma única unidade de saúde.
+
+12.2 Modelo lógico
+	A Figura 7 apresenta o modelo lógico, com as tabelas, os tipos de dados do PostgreSQL, as chaves primárias (PK) e as chaves estrangeiras (FK).
+
+[INSERIR FIGURA: modelo_logico_aurora.png]
+Figura 7 – Modelo lógico do banco de dados. Fonte: Elaborado pelo autor.
+
+	Na passagem do modelo conceitual para o lógico, foram adotadas as seguintes decisões:
+    • Os perfis de cada usuário, que formam um conjunto de valores, foram armazenados na tabela usuario_perfil, cuja chave primária é composta pelo identificador do usuário e pelo perfil.
+    • Os códigos de tamanho fixo definidos pelo layout do BPA, como CNES, CNS, CBO, código do procedimento e código do município, foram armazenados no tipo CHAR com o tamanho exato exigido, o que facilita a validação e a montagem do arquivo.
+    • A competência foi armazenada no formato AAAAMM, o mesmo utilizado no arquivo BPA.
+    • As enumerações do sistema, como perfil, situação da competência e modalidade do procedimento, foram armazenadas como texto, com restrição de verificação (CHECK) que limita os valores aceitos.
+    • A obrigatoriedade do paciente e do CID-10 depende do procedimento informado e, por isso, é verificada pela camada de serviço no momento do lançamento (RF08), e não por restrição do banco de dados.
+
+12.3 Dicionário de dados
+	Os quadros a seguir descrevem os campos de cada tabela. As chaves primárias do tipo BIGSERIAL são geradas automaticamente pelo banco de dados.
+
+Quadro 4 – Dicionário de dados da tabela usuario
+
+Campo | Tipo | Descrição | Restrição
+id | BIGSERIAL | Identificador do usuário | PK
+nome | VARCHAR(100) | Nome completo do usuário | NOT NULL
+login | VARCHAR(50) | Nome de acesso ao sistema | NOT NULL, UNIQUE
+senha_hash | VARCHAR(100) | Senha armazenada com hash BCrypt | NOT NULL
+ativo | BOOLEAN | Indica se o usuário pode acessar o sistema | NOT NULL, DEFAULT TRUE
+
+Quadro 5 – Dicionário de dados da tabela usuario_perfil
+
+Campo | Tipo | Descrição | Restrição
+usuario_id | BIGINT | Usuário ao qual o perfil pertence | PK, FK (usuario)
+perfil | VARCHAR(30) | Perfil de acesso do usuário | PK, CHECK (ADMINISTRADOR, OPERADOR, RESPONSAVEL_PRODUCAO)
+
+Quadro 6 – Dicionário de dados da tabela estabelecimento
+
+Campo | Tipo | Descrição | Restrição
+id | BIGSERIAL | Identificador do estabelecimento | PK
+cnes | CHAR(7) | Código CNES do estabelecimento | NOT NULL, UNIQUE
+nome | VARCHAR(30) | Nome do órgão de origem, informado no cabeçalho do BPA | NOT NULL
+sigla | VARCHAR(6) | Sigla do órgão de origem | NOT NULL
+cnpj | CHAR(14) | CNPJ do estabelecimento, sem pontuação | NOT NULL
+orgao_destino | VARCHAR(40) | Nome do órgão de destino da produção | NOT NULL
+indicador_destino | CHAR(1) | Indica se o destino é a secretaria municipal (M) ou estadual (E) | NOT NULL, CHECK (M, E)
+
+Quadro 7 – Dicionário de dados da tabela profissional
+
+Campo | Tipo | Descrição | Restrição
+id | BIGSERIAL | Identificador do profissional | PK
+nome | VARCHAR(100) | Nome do profissional | NOT NULL
+cns | CHAR(15) | Cartão Nacional de Saúde do profissional | NOT NULL, UNIQUE
+cbo | CHAR(6) | Código da ocupação (CBO) | NOT NULL
+ativo | BOOLEAN | Indica se o profissional pode receber lançamentos | NOT NULL, DEFAULT TRUE
+
+Quadro 8 – Dicionário de dados da tabela paciente
+
+Campo | Tipo | Descrição | Restrição
+id | BIGSERIAL | Identificador do paciente | PK
+cns | CHAR(15) | Cartão Nacional de Saúde do paciente | NOT NULL, UNIQUE
+nome | VARCHAR(100) | Nome do paciente | NOT NULL
+data_nascimento | DATE | Data de nascimento | NOT NULL
+sexo | CHAR(1) | Sexo do paciente | NOT NULL, CHECK (M, F)
+raca_cor | CHAR(2) | Código de raça/cor conforme a tabela do SUS | NOT NULL
+codigo_municipio | CHAR(6) | Código IBGE do município de residência | NOT NULL
+cep | CHAR(8) | CEP, sem pontuação | —
+logradouro | VARCHAR(100) | Logradouro de residência | —
+numero | VARCHAR(10) | Número da residência | —
+bairro | VARCHAR(60) | Bairro de residência | —
+telefone | VARCHAR(11) | Telefone com DDD, sem pontuação | —
+
+Quadro 9 – Dicionário de dados da tabela procedimento
+
+Campo | Tipo | Descrição | Restrição
+id | BIGSERIAL | Identificador do procedimento | PK
+codigo | CHAR(10) | Código do procedimento, com dígito verificador | NOT NULL, UNIQUE
+descricao | VARCHAR(250) | Descrição do procedimento | NOT NULL
+modalidade | VARCHAR(5) | Modalidade de registro no BPA | NOT NULL, CHECK (BPA_C, BPA_I)
+exige_cid | BOOLEAN | Indica se o CID-10 é obrigatório no lançamento | NOT NULL, DEFAULT FALSE
+
+Quadro 10 – Dicionário de dados da tabela competencia
+
+Campo | Tipo | Descrição | Restrição
+id | BIGSERIAL | Identificador da competência | PK
+mes_ano | CHAR(6) | Mês e ano da competência, no formato AAAAMM | NOT NULL, UNIQUE
+situacao | VARCHAR(10) | Situação da competência | NOT NULL, CHECK (ABERTA, FECHADA)
+data_fechamento | TIMESTAMP | Data e hora do último fechamento | Obrigatório quando FECHADA
+
+Quadro 11 – Dicionário de dados da tabela atendimento
+
+Campo | Tipo | Descrição | Restrição
+id | BIGSERIAL | Identificador do atendimento | PK
+competencia_id | BIGINT | Competência à qual o atendimento pertence | NOT NULL, FK (competencia)
+profissional_id | BIGINT | Profissional que realizou o atendimento | NOT NULL, FK (profissional)
+procedimento_id | BIGINT | Procedimento realizado | NOT NULL, FK (procedimento)
+paciente_id | BIGINT | Paciente atendido, obrigatório nos procedimentos de BPA-I | FK (paciente)
+usuario_id | BIGINT | Usuário que registrou o lançamento | NOT NULL, FK (usuario)
+data_atendimento | DATE | Data em que o atendimento foi realizado | NOT NULL
+quantidade | INTEGER | Quantidade de procedimentos realizados | NOT NULL, CHECK (> 0)
+idade | INTEGER | Idade do paciente, exigida nos procedimentos de BPA-C | CHECK (>= 0)
+cid | VARCHAR(4) | Código CID-10, quando exigido pelo procedimento | —
+
+Quadro 12 – Dicionário de dados da tabela exportacao_bpa
+
+Campo | Tipo | Descrição | Restrição
+id | BIGSERIAL | Identificador da exportação | PK
+competencia_id | BIGINT | Competência exportada | NOT NULL, FK (competencia)
+usuario_id | BIGINT | Usuário que gerou o arquivo | NOT NULL, FK (usuario)
+data_geracao | TIMESTAMP | Data e hora da geração | NOT NULL
+nome_arquivo | VARCHAR(50) | Nome do arquivo gerado | NOT NULL
+conteudo | TEXT | Conteúdo completo do arquivo BPA | NOT NULL
+total_registros | INTEGER | Quantidade de registros de produção no arquivo | NOT NULL
+
+Quadro 13 – Dicionário de dados da tabela reabertura_competencia
+
+Campo | Tipo | Descrição | Restrição
+id | BIGSERIAL | Identificador da reabertura | PK
+competencia_id | BIGINT | Competência reaberta | NOT NULL, FK (competencia)
+usuario_id | BIGINT | Usuário que reabriu a competência | NOT NULL, FK (usuario)
+data_reabertura | TIMESTAMP | Data e hora da reabertura | NOT NULL
+motivo | VARCHAR(255) | Justificativa da reabertura | NOT NULL
+
+
+13 PROTOTIPAÇÃO E INTERFACE
+	A interface do Aurora foi planejada para usuários sem conhecimento técnico especializado, que registram atendimentos diariamente e precisam fazê-lo com rapidez e sem erros. Antes da implementação, foram elaborados o fluxo de navegação e wireframes de baixa fidelidade das telas principais, em tons de cinza, de modo a concentrar a avaliação na organização das informações e não na identidade visual, que será definida durante a implementação.
+
+13.1 Fluxo de navegação
+	A Figura 8 apresenta o fluxo de navegação do sistema. Após o login, o usuário acessa a tela inicial, cujo menu exibe apenas as áreas permitidas para o seu perfil, conforme o controle de acesso realizado pelo Spring Security. Um usuário com mais de um perfil visualiza a união das áreas correspondentes.
+
+[INSERIR FIGURA: fluxo_navegacao_aurora.png]
+Figura 8 – Fluxo de navegação por perfil. Fonte: Elaborado pelo autor.
+
+13.2 Wireframes
+	A Figura 9 apresenta a tela de login. Em caso de falha, a mensagem informa que o login ou a senha estão incorretos, sem indicar qual dos dois, o que evita revelar se um login existe no sistema.
+
+[INSERIR FIGURA: wireframe_login.png]
+Figura 9 – Wireframe da tela de login. Fonte: Elaborado pelo autor.
+
+	A Figura 10 apresenta a tela de lançamento de atendimento, principal tela de uso diário. A competência atual permanece visível no topo de todas as telas, e a data informada indica, logo abaixo do campo, a competência à qual o atendimento será associado. Profissional, procedimento e paciente são selecionados por busca, pelo nome ou pelo código, o que evita a digitação completa de códigos extensos. Os campos do paciente e o CID-10 só são exibidos quando o procedimento selecionado os exige, o que reduz a quantidade de informações na tela e a possibilidade de preenchimento indevido. No exemplo, o CNS do paciente foi informado com quantidade incorreta de dígitos, e o erro é indicado junto ao campo, com ícone, texto em linguagem simples e orientação de correção, sem que os demais dados preenchidos sejam perdidos. Abaixo do formulário, a lista dos lançamentos do dia permite ao operador conferir imediatamente o que foi registrado.
+
+[INSERIR FIGURA: wireframe_lancamento.png]
+Figura 10 – Wireframe da tela de lançamento de atendimento. Fonte: Elaborado pelo autor.
+
+	A Figura 11 apresenta a tela da competência, utilizada pelo responsável pela produção. Ela reúne os totais da competência, a produção por procedimento e o histórico de exportações, a partir do qual arquivos anteriores podem ser baixados novamente. Enquanto a competência está aberta, o botão de geração do arquivo permanece desabilitado, com uma explicação ao lado, o que previne a geração de um arquivo com produção ainda não conferida. Após o fechamento, fica disponível a opção de reabertura, que exige o registro do motivo.
+
+[INSERIR FIGURA: wireframe_competencia.png]
+Figura 11 – Wireframe da tela de competência. Fonte: Elaborado pelo autor.
+
+13.3 Decisões de usabilidade, acessibilidade e responsividade
+	As decisões de interface seguem os princípios de tratamento de erros apresentados na seção 6.1.4, segundo os quais as mensagens devem ser visíveis, próximas ao campo afetado, escritas em linguagem simples e acompanhadas de orientação para a correção (NEUSESSER; SUNWALL, 2023). Além de corrigir erros, a interface procura preveni-los: as validações ocorrem no momento do lançamento, os campos não aplicáveis ficam ocultos e as ações que dependem de uma condição, como a geração do arquivo, permanecem indisponíveis até que a condição seja atendida.
+	Quanto à acessibilidade, a interface adota critérios das Diretrizes de Acessibilidade para Conteúdo Web (WCAG) 2.2, no nível AA (W3C, 2023): todos os campos possuem rótulos associados; os erros não são indicados apenas pela cor, mas também por ícone e texto; os textos mantêm contraste mínimo de 4,5:1 com o fundo; e todas as funções podem ser acessadas pelo teclado, com indicação visível do elemento em foco. O uso do teclado também atende a uma necessidade prática, pois permite ao operador preencher o formulário e salvar o lançamento sem recorrer ao mouse, o que agiliza o registro diário.
+	Quanto à responsividade, o sistema foi projetado prioritariamente para as estações de trabalho da unidade, com telas a partir de 1280 pixels de largura. Em telas menores, como as de tablets, o menu lateral é recolhido e os campos do formulário passam a ser exibidos em uma única coluna. O uso em smartphones não faz parte do escopo, uma vez que o registro da produção é realizado nas estações de trabalho.
+
+
+14 DESENVOLVIMENTO E IMPLEMENTAÇÃO
+[A PREENCHER DURANTE A IMPLEMENTAÇÃO – sugestão de módulos, seguindo os incrementos da Metodologia: 14.1 Autenticação e perfis; 14.2 Cadastros; 14.3 Lançamento e validação de atendimentos; 14.4 Competência e reabertura; 14.5 Geração do arquivo BPA; 14.6 Implantação com HTTPS na rede local. Para cada um: objetivo, tecnologias utilizadas, descrição da implementação e resultado obtido.]
+
+15 VERSIONAMENTO E REPOSITÓRIO
+Plataforma utilizada: GitHub
+Endereço do repositório: [PREENCHER]
+[A PREENCHER: organização do código, estratégia de branches, padrão de commits, documentação e versões.]
+
+16 TESTES E VALIDAÇÃO
+[A PREENCHER APÓS OS TESTES – tabela com ID, funcionalidade, procedimento, resultado esperado, resultado obtido e status.]
+
+17 RESULTADOS
+[A PREENCHER APÓS A IMPLEMENTAÇÃO.]
+
+18 DISCUSSÃO DOS RESULTADOS
+[A PREENCHER APÓS A IMPLEMENTAÇÃO.]
+
+
+19 SEGURANÇA, PRIVACIDADE E ÉTICA
+
+19.1 Autenticação e autorização
+	O acesso ao Aurora exige autenticação por login e senha, realizada pelo Spring Security. As senhas são armazenadas apenas na forma de hash BCrypt, de modo que a senha original não fica registrada no banco de dados (SPRING, 2026c), e usuários desativados não conseguem acessar o sistema. Em caso de falha no login, a mensagem exibida não informa se o erro está no login ou na senha, o que evita revelar quais usuários existem.
+	A autorização é feita por perfil. Além de o menu exibir apenas as áreas permitidas ao usuário, cada requisição é verificada no servidor, de modo que uma funcionalidade não pode ser acessada por um perfil não autorizado mesmo que seu endereço seja digitado diretamente no navegador.
+
+19.2 Proteção dos dados em trânsito e armazenados
+	A comunicação entre as estações de trabalho e o servidor é criptografada por HTTPS, com certificado próprio instalado nas estações (RNF09), o que impede que senhas e dados de pacientes trafeguem em texto aberto na rede local. Os dados ficam armazenados no servidor da própria unidade, sem envio pela internet nem armazenamento em serviços de terceiros. O acesso ao banco de dados é restrito ao usuário configurado para a aplicação, e as cópias de segurança devem ser mantidas em local de acesso restrito, uma vez que contêm os mesmos dados pessoais do banco.
+
+19.3 Privacidade e Lei Geral de Proteção de Dados
+	O Aurora trata dados pessoais de pacientes, como nome, CNS, data de nascimento, endereço e telefone, e também dados pessoais sensíveis, como os procedimentos realizados, o CID-10 e a raça/cor, uma vez que a Lei Geral de Proteção de Dados Pessoais classifica como sensíveis os dados referentes à saúde e à origem racial ou étnica (BRASIL, 2018, art. 5º, II). O tratamento desses dados pela unidade de saúde encontra fundamento no cumprimento de obrigação legal ou regulatória, uma vez que a produção ambulatorial deve ser informada ao SUS, e na tutela da saúde, em procedimento realizado por serviços de saúde (BRASIL, 2018, art. 11, II, a e f).
+	O sistema foi projetado de acordo com os princípios da finalidade e da necessidade (BRASIL, 2018, art. 6º): são coletados apenas os campos exigidos pelo BPA, e os dados são utilizados exclusivamente para o registro e o envio da produção. As medidas técnicas de segurança descritas nas seções 19.1 e 19.2 atendem ao dever de proteção dos dados pessoais contra acessos não autorizados (BRASIL, 2018, art. 46). Além disso, cada lançamento, exportação e reabertura de competência registra o usuário responsável, o que permite rastrear as operações realizadas sobre os dados.
+	A unidade de saúde é a controladora dos dados, cabendo a ela definir o período de retenção das informações e atender às solicitações dos titulares; o Aurora fornece os meios técnicos para isso. Durante o desenvolvimento e os testes, foram utilizados exclusivamente dados fictícios, sem tratamento de dados pessoais reais.
+
+19.4 Inteligência Artificial
+	O Aurora não utiliza técnicas de Inteligência Artificial em seu funcionamento. As validações e a geração do arquivo seguem regras determinísticas, definidas a partir do layout oficial do BPA, de modo que não se aplicam a ele os aspectos éticos relacionados a decisões automatizadas por IA.
+
+
+20 LIMITAÇÕES DO PROJETO
+	As seguintes limitações foram identificadas na definição do projeto e devem ser revistas ao final da implementação:
+    • O Aurora não substitui os sistemas oficiais. A importação do arquivo no SIA é realizada manualmente pelo usuário, uma vez que o sistema não se comunica diretamente com os sistemas do Ministério da Saúde.
+    • As validações implementadas seguem as regras do layout de exportação do BPA, mas não reproduzem todas as críticas realizadas pelo SIA, como as de compatibilidade entre procedimento, ocupação, idade e sexo. Assim, um arquivo considerado válido pelo Aurora ainda pode ter registros rejeitados pelo SIA.
+    • A tabela de procedimentos é cadastrada manualmente pela unidade, sem importação da tabela oficial do SUS.
+    • O sistema depende da versão vigente do layout do BPA. Alterações publicadas pelo DATASUS exigirão a atualização do Aurora.
+    • Cada instalação atende a um único estabelecimento de saúde.
+    • O certificado utilizado no HTTPS precisa ser instalado manualmente em cada estação de trabalho, e o servidor deve possuir endereço fixo na rede local.
+    • A validação foi realizada com dados fictícios, sem testes com usuários reais das unidades de saúde.
+    • O sistema não foi projetado para uso em smartphones.
+
+
+21 TRABALHOS FUTUROS
+	A partir das limitações identificadas, são sugeridos os seguintes trabalhos futuros:
+    • Importação da tabela oficial de procedimentos do SUS (SIGTAP), com validação de compatibilidade entre procedimento, ocupação, idade e sexo no momento do lançamento.
+    • Integração direta com os serviços oficiais do Ministério da Saúde, caso disponibilizados, eliminando a importação manual do arquivo.
+    • Importação dos dados de profissionais a partir do CNES.
+    • Suporte a outros instrumentos de registro da produção ambulatorial, como a APAC e o RAAS.
+    • Suporte a múltiplos estabelecimentos em uma mesma instalação.
+    • Relatórios gerenciais com indicadores de produção da unidade.
+    • Avaliação de usabilidade com usuários reais de unidades de saúde.
+    • Rotina automatizada de cópias de segurança.
+
+
+22 CONCLUSÃO
+[A PREENCHER AO FINAL – retomar o problema, o objetivo geral, a solução desenvolvida, os principais resultados e as contribuições, sem introduzir informações novas.]
+
+
+23 CRONOGRAMA
+
+Etapa | Data prevista | Data realizada | Status
+Definição do problema | set./2026 | set./2026 (revisada em nov./2026) | Concluída
+Levantamento bibliográfico | nov./2026 | nov./2026 | Concluída
+Levantamento de requisitos | nov./2026 | nov./2026 | Concluída
+Prototipação | nov./2026 | nov./2026 | Concluída
+Modelagem | nov./2026 | nov./2026 | Concluída
+Desenvolvimento | 10/11 a 26/11/2026 | — | A iniciar
+Testes | 12/11 a 28/11/2026 | — | A iniciar
+Documentação | 09/11 a 01/12/2026 | — | Em andamento
+Apresentação final | 03/12/2026 | — | A iniciar
+
+
+
+24 REFERÊNCIAS
+
+BRASIL. Ministério da Saúde. Secretaria de Atenção à Saúde. Departamento de Regulação, Avaliação e Controle. Sistema de Informações Ambulatoriais do SUS – SIA/SUS: manual de orientações técnicas. Brasília, DF: Editora do Ministério da Saúde, 2007. (Série A. Normas e Manuais Técnicos). Disponível em: https://bvsms.saude.gov.br/bvs/publicacoes/07_0194_M.pdf. Acesso em: 5 nov. 2026.
+
+BRASIL. Ministério da Saúde. Departamento de Informática do SUS (DATASUS). Manual operacional do BPA. Brasília, DF: DATASUS, 2013. Disponível em: ftp://arpoador.datasus.gov.br/siasus/Documentos/BPA/Manual_Operacional_BPA.pdf. Acesso em: 5 nov. 2026.
+
+BRASIL. Ministério da Saúde. Portaria nº 1.646, de 2 de outubro de 2015. Institui o Cadastro Nacional de Estabelecimentos de Saúde (CNES). Diário Oficial da União, Brasília, DF, 2015. Disponível em: https://bvsms.saude.gov.br/bvs/saudelegis/gm/2015/prt1646_02_10_2015.html. Acesso em: 5 nov. 2026.
+
+BRASIL. Ministério da Saúde. Departamento de Informática do SUS (DATASUS). Manual operacional do SIA: versão 2. Brasília, DF: DATASUS, 2016. Disponível em: ftp://arpoador.datasus.gov.br/siasus/Documentos/sia/Manual_Operacional_SIA_v2.pdf. Acesso em: 5 nov. 2026.
+
+BRASIL. Lei nº 13.709, de 14 de agosto de 2018. Lei Geral de Proteção de Dados Pessoais (LGPD). Diário Oficial da União, Brasília, DF, 15 ago. 2018. Disponível em: https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm. Acesso em: 8 nov. 2026.
+
+BRASIL. Ministério da Saúde. Departamento de Informática do SUS (DATASUS). Layout de exportação do BPA. Brasília, DF: DATASUS, 2026. Disponível em: ftp://arpoador.datasus.gov.br/siasus/Documentos/BPA/Layout_Exportacao_BPA.pdf. Acesso em: 5 nov. 2026.
+
+CONSELHO NACIONAL DE SECRETÁRIOS DE SAÚDE (CONASS). Nota Técnica nº 05/2023: aplicativos de gestão hospitalar do SUS. Brasília, DF: CONASS, 2023. Disponível em: https://www.conass.org.br/biblioteca/wp-content/uploads/2024/09/NT-05-2023-software-hospitalar.pdf. Acesso em: 5 nov. 2026.
+
+FERREIRA FILHO, Wagner Williams Barros. Sistema de gestão e controle de atividades em unidade de saúde. 2022. Trabalho de Conclusão de Curso (Graduação em Engenharia de Computação) – Instituto de Computação, Universidade Federal de Alagoas, Maceió, 2022.
+
+GOMES, Márcia Lúcia de Oliveira; NASCIMENTO, Mere Benedita do; RODRIGUES, Fernanda d’Athayde. Glosas nos estabelecimentos de saúde sob gestão estadual e gerência consorciada, no Ceará. Revista Gestão e Secretariado (GeSec), São Paulo, v. 15, n. 2, p. 1-13, 2024. DOI: 10.7769/gesec.v15i2.3477.
+
+HIBERNATE. Hibernate ORM documentation. [S. l.], 2026. Disponível em: https://hibernate.org/orm/documentation/. Acesso em: 5 nov. 2026.
+
+JANDL JUNIOR, Peter. Java: guia do programador. 2. ed. São Paulo: Novatec, 2013.
+
+NEUSESSER, Tim; SUNWALL, Evan. Error-message guidelines. Nielsen Norman Group, 14 maio 2023. Disponível em: https://www.nngroup.com/articles/error-message-guidelines/. Acesso em: 5 nov. 2026.
+
+POSTGRESQL. PostgreSQL documentation. [S. l.], 2026. Disponível em: https://www.postgresql.org/docs/. Acesso em: 5 nov. 2026.
+
+PRESSMAN, Roger S.; MAXIM, Bruce R. Engenharia de software: uma abordagem profissional. 9. ed. Porto Alegre: AMGH, 2021.
+
+PUREWAL, Semmy. Aprendendo a desenvolver aplicações web. São Paulo: Novatec, 2014.
+
+SOMMERVILLE, Ian. Engenharia de software. 10. ed. São Paulo: Pearson Education do Brasil, 2018.
+
+SPRING. Spring Boot reference documentation. [S. l.], 2026a. Disponível em: https://docs.spring.io/spring-boot/documentation.html. Acesso em: 5 nov. 2026.
+
+SPRING. Spring Data JPA reference documentation. [S. l.], 2026b. Disponível em: https://docs.spring.io/spring-data/jpa/reference/index.html. Acesso em: 5 nov. 2026.
+
+SPRING. Spring Security reference documentation. [S. l.], 2026c. Disponível em: https://docs.spring.io/spring-security/reference/index.html. Acesso em: 8 nov. 2026.
+
+TANENBAUM, Andrew S.; WETHERALL, David. Redes de computadores. 5. ed. São Paulo: Pearson Education do Brasil, 2011.
+
+W3C. Web Content Accessibility Guidelines (WCAG) 2.2. [S. l.]: World Wide Web Consortium, 2023. Disponível em: https://www.w3.org/TR/WCAG22/. Acesso em: 9 nov. 2026.
+
+
+25 APÊNDICES
+[A PREENCHER – sugestões: Apêndice A – Guia de implantação (instalação do servidor, geração e instalação do certificado HTTPS nas estações e configuração do endereço fixo); Apêndice B – Manual do usuário; Apêndice C – Documentação da API REST.]
+
+26 ANEXOS
+[A PREENCHER, SE NECESSÁRIO – materiais de terceiros, como o layout de exportação do BPA publicado pelo DATASUS.]
+
+27 REGISTRO DE CONTRIBUIÇÕES DA EQUIPE
+	Não se aplica, uma vez que o trabalho foi desenvolvido individualmente pelo autor.
+
+28 CHECKLIST FINAL
+[x] O problema está claramente definido.
+[x] O objetivo geral está alinhado ao problema.
+[ ] Os objetivos específicos foram atendidos.
+[x] A fundamentação teórica possui referências.
+[x] Os requisitos estão documentados.
+[x] A arquitetura da solução está apresentada.
+[x] Os diagramas necessários foram incluídos.
+[x] O banco de dados está documentado, quando aplicável.
+[x] As tecnologias utilizadas foram justificadas.
+[ ] A implementação está documentada.
+[ ] Os testes possuem evidências.
+[ ] Os resultados foram apresentados e discutidos.
+[x] As limitações foram identificadas.
+[x] As referências estão padronizadas.
+[ ] Figuras e tabelas estão identificadas.
+[ ] O repositório está organizado.
+[ ] O texto passou por revisão ortográfica e técnica.
+[ ] A versão final corresponde ao sistema apresentado.

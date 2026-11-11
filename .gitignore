@@ -1,0 +1,26 @@
+# Build
+target/
+*.class
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# Segredos: nunca commitar
+.env
+*.env
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Sistema
+.DS_Store
+*.log
+
+# Maven wrapper (baixado sob demanda)
+.mvn/wrapper/maven-wrapper.jar
