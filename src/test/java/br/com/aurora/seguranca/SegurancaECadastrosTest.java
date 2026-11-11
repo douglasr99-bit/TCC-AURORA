@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -96,6 +97,26 @@ class SegurancaECadastrosTest {
         mvc.perform(post("/login").param("login", "it.inativo").param("senha", SENHA).with(csrf()))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.erros[0].mensagem").value("Login ou senha incorretos."));
+    }
+
+    @Test
+    @DisplayName("T03b Usuário desativado pelo administrador perde o acesso na hora (sessão encerrada)")
+    void desativadoPerdeSessao() throws Exception {
+        MockHttpSession sessao = (MockHttpSession) mvc.perform(post("/login")
+                        .param("login", "it.operador").param("senha", SENHA).with(csrf()))
+                .andExpect(status().isOk())
+                .andReturn().getRequest().getSession();
+        mvc.perform(get("/api/me").session(sessao)).andExpect(status().isOk());
+
+        String corpo = """
+                {"nome":"Operador Fictício","login":"it.operador","perfis":["OPERADOR"],"ativo":false}""";
+        mvc.perform(put("/api/usuarios/" + operador.getId()).with(user(new UsuarioAutenticado(admin))).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON).content(corpo))
+                .andExpect(status().isOk());
+
+        mvc.perform(get("/api/me").session(sessao))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.erros[0].mensagem").value("Seu acesso foi alterado pelo administrador. Entre novamente."));
     }
 
     @Test

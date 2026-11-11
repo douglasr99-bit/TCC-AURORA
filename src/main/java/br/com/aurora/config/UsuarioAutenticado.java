@@ -53,4 +53,15 @@ public final class UsuarioAutenticado implements UserDetails {
     /** Usuário com ativo = false não entra. */
     @Override
     public boolean isEnabled() { return ativo; }
+
+    /** Mesmo usuário = mesmo id (o registro de sessões agrupa as sessões por usuário). */
+    @Override
+    public boolean equals(Object outro) {
+        return outro instanceof UsuarioAutenticado u && id.equals(u.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }

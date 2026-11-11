@@ -3,6 +3,8 @@ package br.com.aurora.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import br.com.aurora.config.SessoesUsuario;
 import br.com.aurora.domain.Perfil;
 import br.com.aurora.domain.Usuario;
 import br.com.aurora.dto.UsuarioEntrada;
@@ -23,13 +26,16 @@ import br.com.aurora.repository.UsuarioRepository;
 class UsuarioServiceTest {
 
     private UsuarioRepository repositorio;
+    private SessoesUsuario sessoes;
     private UsuarioService servico;
     private Usuario admin;
+    private Usuario operador;
 
     @BeforeEach
     void preparar() {
         repositorio = mock(UsuarioRepository.class);
-        servico = new UsuarioService(repositorio, new BCryptPasswordEncoder());
+        sessoes = mock(SessoesUsuario.class);
+        servico = new UsuarioService(repositorio, new BCryptPasswordEncoder(), sessoes);
         admin = new Usuario();
         ReflectionTestUtils.setField(admin, "id", 1L);
         admin.setNome("Admin Ficticio");
@@ -37,6 +43,38 @@ class UsuarioServiceTest {
         admin.setSenhaHash("x");
         admin.setPerfis(Set.of(Perfil.ADMINISTRADOR));
         when(repositorio.findById(1L)).thenReturn(Optional.of(admin));
+
+        operador = new Usuario();
+        ReflectionTestUtils.setField(operador, "id", 2L);
+        operador.setNome("Operador Ficticio");
+        operador.setLogin("operador.teste");
+        operador.setSenhaHash("x");
+        operador.setPerfis(Set.of(Perfil.OPERADOR));
+        when(repositorio.findById(2L)).thenReturn(Optional.of(operador));
+    }
+
+    @Test
+    @DisplayName("Desativar um usuário encerra as sessões abertas dele")
+    void desativarEncerraSessoes() {
+        servico.atualizar(2L, new UsuarioEntrada("Operador Ficticio", "operador.teste", null,
+                Set.of(Perfil.OPERADOR), false), 1L);
+        verify(sessoes).encerrar(2L);
+    }
+
+    @Test
+    @DisplayName("Mudar os perfis de um usuário encerra as sessões abertas dele")
+    void mudarPerfisEncerraSessoes() {
+        servico.atualizar(2L, new UsuarioEntrada("Operador Ficticio", "operador.teste", null,
+                Set.of(Perfil.OPERADOR, Perfil.RESPONSAVEL_PRODUCAO), true), 1L);
+        verify(sessoes).encerrar(2L);
+    }
+
+    @Test
+    @DisplayName("Mudar só o nome não encerra as sessões")
+    void mudarNomeNaoEncerraSessoes() {
+        servico.atualizar(2L, new UsuarioEntrada("Operador Ficticio Silva", "operador.teste", null,
+                Set.of(Perfil.OPERADOR), true), 1L);
+        verify(sessoes, never()).encerrar(2L);
     }
 
     @Test
