@@ -1,0 +1,80 @@
+Aurora — incremento 1 — execução dos testes (mvn test) em 11/11/2026 09:56
+Java 25.0.5, PostgreSQL 18 (banco aurora_teste)
+
+-------------------------------------------------------------------------------
+Test set: br.com.aurora.seguranca.SegurancaECadastrosTest
+-------------------------------------------------------------------------------
+Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 10.14 s -- in br.com.aurora.seguranca.SegurancaECadastrosTest
+
+-------------------------------------------------------------------------------
+Test set: br.com.aurora.service.PacienteServiceTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.316 s -- in br.com.aurora.service.PacienteServiceTest
+
+-------------------------------------------------------------------------------
+Test set: br.com.aurora.service.UsuarioServiceTest
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.189 s -- in br.com.aurora.service.UsuarioServiceTest
+
+-------------------------------------------------------------------------------
+Test set: br.com.aurora.validacao.ValidadorCnsTest
+-------------------------------------------------------------------------------
+Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.169 s -- in br.com.aurora.validacao.ValidadorCnsTest
+
+-------------------------------------------------------------------------------
+Test set: br.com.aurora.validacao.ValidadorProcedimentoTest
+-------------------------------------------------------------------------------
+Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.081 s -- in br.com.aurora.validacao.ValidadorProcedimentoTest
+
+Casos:
+  [OK] SegurancaECadastrosTest :: variosErros
+  [OK] SegurancaECadastrosTest :: nomeAcimaDoLayout
+  [OK] SegurancaECadastrosTest :: senhaErrada
+  [OK] SegurancaECadastrosTest :: usuarioInativo
+  [OK] SegurancaECadastrosTest :: pacienteValido
+  [OK] SegurancaECadastrosTest :: operadorNaoAlteraEstabelecimento
+  [OK] SegurancaECadastrosTest :: adminSemAcessoAPacientes
+  [OK] SegurancaECadastrosTest :: loginInexistente
+  [OK] SegurancaECadastrosTest :: semLogin
+  [OK] SegurancaECadastrosTest :: procedimentoDvInvalido
+  [OK] SegurancaECadastrosTest :: loginValido
+  [OK] SegurancaECadastrosTest :: cnsComDigitosAMenos
+  [OK] SegurancaECadastrosTest :: semCsrf
+  [OK] SegurancaECadastrosTest :: operadorSemPermissao
+  [OK] PacienteServiceTest :: etniaSemSerIndigena
+  [OK] PacienteServiceTest :: valido
+  [OK] PacienteServiceTest :: codigosForaDaTabela
+  [OK] PacienteServiceTest :: indigenaComEtnia
+  [OK] PacienteServiceTest :: idadeAcimaDe130
+  [OK] PacienteServiceTest :: nascimentoNoFuturo
+  [OK] PacienteServiceTest :: cnsDuplicado
+  [OK] PacienteServiceTest :: indigenaSemEtnia
+  [OK] UsuarioServiceTest :: naoDesativaASiMesmo
+  [OK] UsuarioServiceTest :: criarSemSenha
+  [OK] UsuarioServiceTest :: senhaNaEdicao
+  [OK] UsuarioServiceTest :: naoTiraProprioPerfilAdmin
+  [OK] ValidadorCnsTest :: definitivoDvDez
+  [OK] ValidadorCnsTest :: invalidos(String)[1]
+  [OK] ValidadorCnsTest :: invalidos(String)[2]
+  [OK] ValidadorCnsTest :: invalidos(String)[3]
+  [OK] ValidadorCnsTest :: invalidos(String)[4]
+  [OK] ValidadorCnsTest :: invalidos(String)[5]
+  [OK] ValidadorCnsTest :: invalidos(String)[6]
+  [OK] ValidadorCnsTest :: invalidos(String)[7]
+  [OK] ValidadorCnsTest :: invalidos(String)[8]
+  [OK] ValidadorCnsTest :: invalidos(String)[9]
+  [OK] ValidadorCnsTest :: definitivoSimples
+  [OK] ValidadorCnsTest :: definitivoDvOnze
+  [OK] ValidadorCnsTest :: provisorio
+  [OK] ValidadorProcedimentoTest :: invalidos(String)[1]
+  [OK] ValidadorProcedimentoTest :: invalidos(String)[2]
+  [OK] ValidadorProcedimentoTest :: invalidos(String)[3]
+  [OK] ValidadorProcedimentoTest :: invalidos(String)[4]
+  [OK] ValidadorProcedimentoTest :: invalidos(String)[5]
+  [OK] ValidadorProcedimentoTest :: invalidos(String)[6]
+  [OK] ValidadorProcedimentoTest :: invalidos(String)[7]
+  [OK] ValidadorProcedimentoTest :: invalidos(String)[8]
+  [OK] ValidadorProcedimentoTest :: alteracaoDeUmDigito
+  [OK] ValidadorProcedimentoTest :: todosOsCodigosOficiais
+  [OK] ValidadorProcedimentoTest :: restoDez
+  [OK] ValidadorProcedimentoTest :: exemploConhecido
