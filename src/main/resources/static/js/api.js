@@ -64,7 +64,44 @@ const Api = (() => {
         return dados;
     }
 
+    /**
+     * Baixa um arquivo (ex.: BPA). Em erro, lança { status, erros } como as outras chamadas.
+     * Devolve o nome do arquivo informado pelo servidor.
+     */
+    async function baixar(metodo, url) {
+        const cabecalhos = {};
+        if (metodo !== "GET") cabecalhos["X-XSRF-TOKEN"] = await tokenCsrf();
+        let resposta;
+        try {
+            resposta = await fetch(url, { method: metodo, headers: cabecalhos, credentials: "same-origin" });
+        } catch (e) {
+            throw { status: 0, erros: [{ campo: null,
+                mensagem: "Não foi possível falar com o servidor. Verifique a rede e tente de novo." }] };
+        }
+        if (resposta.status === 401) {
+            window.location.href = "/login.html";
+            throw { status: 401, erros: [] };
+        }
+        if (!resposta.ok) {
+            const dados = await resposta.json().catch(() => null);
+            throw { status: resposta.status, erros: (dados && dados.erros) || [{ campo: null,
+                mensagem: "Não foi possível gerar o arquivo. Tente de novo." }] };
+        }
+        const disposicao = resposta.headers.get("Content-Disposition") || "";
+        const nome = (disposicao.match(/filename="?([^";]+)"?/) || [])[1] || "bpa.txt";
+        const url2 = URL.createObjectURL(await resposta.blob());
+        const link = document.createElement("a");
+        link.href = url2;
+        link.download = nome;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url2), 1000);
+        return nome;
+    }
+
     return {
+        baixar,
         get: (url, opcoes) => requisitar("GET", url, undefined, opcoes),
         post: (url, corpo, opcoes) => requisitar("POST", url, corpo, opcoes),
         put: (url, corpo, opcoes) => requisitar("PUT", url, corpo, opcoes),

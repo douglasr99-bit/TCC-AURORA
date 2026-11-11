@@ -16,7 +16,7 @@ const Layout = (() => {
         { id: "cadastros", rotulo: "Cadastros", href: "/cadastros.html", perfis: ["ADMINISTRADOR"] },
     ];
     // Telas dos próximos incrementos ainda não existem.
-    const INCREMENTO_ATUAL = 2;
+    const INCREMENTO_ATUAL = 3;
 
     const NOMES_PERFIL = {
         ADMINISTRADOR: "Administrador",

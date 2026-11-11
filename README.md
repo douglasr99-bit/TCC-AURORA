@@ -19,6 +19,10 @@ TCC de Ciência da Computação (UNIFRAN) — Douglas Rodrigues Santos. Orientad
 | `AURORA_DB_SENHA` | senha do banco |
 | `AURORA_ADMIN_LOGIN` | login do administrador criado no primeiro acesso (só é usado se não houver nenhum usuário) |
 | `AURORA_ADMIN_SENHA` | senha desse administrador (mínimo 8 caracteres) |
+| `AURORA_KEYSTORE` | caminho do keystore PKCS12 do certificado HTTPS |
+| `AURORA_KEYSTORE_SENHA` | senha do keystore |
+| `AURORA_HTTPS` | (só desenvolvimento) `false` desliga o HTTPS; padrão `true` |
+| `AURORA_PORTA` | (só desenvolvimento) porta; padrão `8443` |
 | `AURORA_TEST_DB_URL` | (opcional) banco dos testes de integração; padrão `jdbc:postgresql://localhost:5433/aurora_teste` |
 
 Em desenvolvimento, as variáveis podem ficar num arquivo `.env` na pasta do projeto, no formato `NOME=valor`, uma por linha. O `.env` está no `.gitignore` e **nunca deve ser commitado**.
@@ -50,9 +54,20 @@ docker run -d --name aurora-db --restart unless-stopped \
 mvn spring-boot:run
 ```
 
-Acesse `http://localhost:8080`. No primeiro acesso, entre com `AURORA_ADMIN_LOGIN` e `AURORA_ADMIN_SENHA` e cadastre o estabelecimento.
+Por padrão o Aurora sobe em **HTTPS na porta 8443** e exige o keystore (`AURORA_KEYSTORE`, `AURORA_KEYSTORE_SENHA`). Acesse `https://<servidor>:8443`. No primeiro acesso, entre com `AURORA_ADMIN_LOGIN` e `AURORA_ADMIN_SENHA` e cadastre o estabelecimento.
 
-HTTPS (porta 8443, certificado próprio) entra no incremento 3; o guia ficará em `docs/guia-implantacao.md`.
+Em desenvolvimento, sem certificado: `AURORA_HTTPS=false` e `AURORA_PORTA=8080` no `.env`, e acesse `http://localhost:8080`.
+
+## Gerar o certificado
+
+```bash
+keytool -genkeypair -alias aurora -keyalg RSA -keysize 2048 -validity 825 -storetype PKCS12 \
+  -keystore aurora.p12 -dname "CN=aurora-servidor, O=Unidade de Saude, C=BR" \
+  -ext "SAN=dns:aurora-servidor,ip:192.168.0.10"
+keytool -exportcert -rfc -alias aurora -keystore aurora.p12 -file aurora.crt
+```
+
+O `aurora.crt` é instalado nas estações. Passo a passo (Windows, Chrome/Edge e Firefox), execução como serviço e cópia de segurança em `docs/guia-implantacao.md`.
 
 ## Testes
 

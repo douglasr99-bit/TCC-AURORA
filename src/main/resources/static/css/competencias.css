@@ -1,0 +1,34 @@
+.seletor { display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem; }
+.seletor label { font-weight: 600; }
+.seletor select { width: auto; min-width: 10rem; }
+
+.titulo-competencia { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+.titulo-competencia h1 { margin: 0; }
+.selo {
+    border: 2px solid var(--cor-texto); border-radius: 999px; padding: .2rem .9rem;
+    font-weight: 700; letter-spacing: .05em; font-size: .9rem;
+}
+.selo.fechada { border-color: var(--cor-erro); color: var(--cor-erro); }
+.selo.aberta { border-color: var(--cor-sucesso); color: var(--cor-sucesso); }
+
+.cartoes {
+    list-style: none; padding: 0; margin: 0 0 1.5rem;
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem;
+}
+.cartoes li {
+    background: var(--cor-superficie); border: 1px solid var(--cor-borda-suave); border-radius: var(--raio);
+    padding: .9rem 1.1rem;
+}
+.cartoes span { display: block; color: var(--cor-texto-suave); font-size: .95rem; }
+.cartoes strong { display: block; font-size: 2rem; margin-top: .2rem; }
+
+h2 { margin-top: 1.5rem; }
+table { background: var(--cor-superficie); }
+th.numero, td.numero { text-align: right; }
+
+.acoes-competencia { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin: 1.5rem 0 1rem; }
+.confirmacao { max-width: 46rem; }
+
+@media (max-width: 1024px) {
+    .cartoes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

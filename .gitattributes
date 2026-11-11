@@ -1,2 +1,5 @@
 /mvnw text eol=lf
 *.cmd text eol=crlf
+
+# Arquivo BPA de exemplo: manter os CR LF exatamente como gerados
+docs/evidencias/**/bpa_*.txt -text

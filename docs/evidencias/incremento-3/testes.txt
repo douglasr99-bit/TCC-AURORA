@@ -1,0 +1,105 @@
+Aurora — incremento 3 — execução dos testes (mvn test) em 11/11/2026 10:29
+
+AtendimentoIntegracaoTest: 7 testes, 0 falhas, 0 erros
+  [OK] bpaICompleto
+  [OK] situacaoCompetencia
+  [OK] primeiroLancamentoCriaCompetencia
+  [OK] adminNaoLanca
+  [OK] competenciaFechada
+  [OK] quantidadeInvalida
+  [OK] consultarCorrigirExcluir
+CompetenciaExportacaoTest: 6 testes, 0 falhas, 0 erros
+  [OK] desempenhoEHistorico
+  [OK] transicoesInvalidas
+  [OK] reabrir
+  [OK] conferencia
+  [OK] gerarComCompetenciaAberta
+  [OK] operadorSemPermissao
+GeradorArquivoBpaTest: 11 testes, 0 falhas, 0 erros
+  [OK] naoTrunca
+  [OK] limiteDeFolhas
+  [OK] folhasBpaC
+  [OK] folhasBpaI
+  [OK] cabecalho
+  [OK] registroBpaI
+  [OK] tamanhosEAscii
+  [OK] folhasContinuas
+  [OK] etnia
+  [OK] consolidacaoBpaC
+  [OK] dominioDoControle
+SegurancaECadastrosTest: 15 testes, 0 falhas, 0 erros
+  [OK] variosErros
+  [OK] nomeAcimaDoLayout
+  [OK] senhaErrada
+  [OK] desativadoPerdeSessao
+  [OK] usuarioInativo
+  [OK] pacienteValido
+  [OK] operadorNaoAlteraEstabelecimento
+  [OK] adminSemAcessoAPacientes
+  [OK] loginInexistente
+  [OK] semLogin
+  [OK] procedimentoDvInvalido
+  [OK] loginValido
+  [OK] cnsComDigitosAMenos
+  [OK] semCsrf
+  [OK] operadorSemPermissao
+AtendimentoServiceTest: 12 testes, 0 falhas, 0 erros
+  [OK] bpaCIdadeForaDoDominio
+  [OK] variosErros
+  [OK] bpaISemCarater
+  [OK] novembroFechado
+  [OK] bpaCSemIdade
+  [OK] bpaISemPaciente
+  [OK] novembroLancadoEmDezembro
+  [OK] bpaIValidoCalculaIdade
+  [OK] exigeCidSemCid
+  [OK] cidInexistente
+  [OK] profissionalInativo
+  [OK] dataNoFuturo
+PacienteServiceTest: 8 testes, 0 falhas, 0 erros
+  [OK] etniaSemSerIndigena
+  [OK] valido
+  [OK] codigosForaDaTabela
+  [OK] indigenaComEtnia
+  [OK] idadeAcimaDe130
+  [OK] nascimentoNoFuturo
+  [OK] cnsDuplicado
+  [OK] indigenaSemEtnia
+UsuarioServiceTest: 7 testes, 0 falhas, 0 erros
+  [OK] naoDesativaASiMesmo
+  [OK] criarSemSenha
+  [OK] senhaNaEdicao
+  [OK] naoTiraProprioPerfilAdmin
+  [OK] desativarEncerraSessoes
+  [OK] mudarNomeNaoEncerraSessoes
+  [OK] mudarPerfisEncerraSessoes
+ValidadorCnsTest: 13 testes, 0 falhas, 0 erros
+  [OK] definitivoDvDez
+  [OK] invalidos(String)[1]
+  [OK] invalidos(String)[2]
+  [OK] invalidos(String)[3]
+  [OK] invalidos(String)[4]
+  [OK] invalidos(String)[5]
+  [OK] invalidos(String)[6]
+  [OK] invalidos(String)[7]
+  [OK] invalidos(String)[8]
+  [OK] invalidos(String)[9]
+  [OK] definitivoSimples
+  [OK] definitivoDvOnze
+  [OK] provisorio
+ValidadorProcedimentoTest: 12 testes, 0 falhas, 0 erros
+  [OK] invalidos(String)[1]
+  [OK] invalidos(String)[2]
+  [OK] invalidos(String)[3]
+  [OK] invalidos(String)[4]
+  [OK] invalidos(String)[5]
+  [OK] invalidos(String)[6]
+  [OK] invalidos(String)[7]
+  [OK] invalidos(String)[8]
+  [OK] alteracaoDeUmDigito
+  [OK] todosOsCodigosOficiais
+  [OK] restoDez
+  [OK] exemploConhecido
+
+Total: 91 testes, 91 passaram.
+Saída do teste T16 (desempenhoEHistorico): RNF07: arquivo de 3.000 atendimentos gerado em 121 ms

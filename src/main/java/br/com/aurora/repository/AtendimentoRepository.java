@@ -10,8 +10,29 @@ import org.springframework.data.repository.query.Param;
 
 import br.com.aurora.domain.Atendimento;
 import br.com.aurora.domain.Competencia;
+import br.com.aurora.dto.ProducaoProcedimento;
+import br.com.aurora.dto.ProducaoProfissional;
 
 public interface AtendimentoRepository extends JpaRepository<Atendimento, Long> {
+
+    /** RF11: produção por procedimento (soma das quantidades). */
+    @Query("""
+            select new br.com.aurora.dto.ProducaoProcedimento(p.codigo, p.descricao, p.modalidade,
+                   count(a), sum(a.quantidade))
+            from Atendimento a join a.procedimento p
+            where a.competencia = :competencia
+            group by p.codigo, p.descricao, p.modalidade
+            order by p.codigo""")
+    List<ProducaoProcedimento> producaoPorProcedimento(@Param("competencia") Competencia competencia);
+
+    /** RF11: produção por profissional. */
+    @Query("""
+            select new br.com.aurora.dto.ProducaoProfissional(pr.nome, pr.cbo, count(a), sum(a.quantidade))
+            from Atendimento a join a.profissional pr
+            where a.competencia = :competencia
+            group by pr.id, pr.nome, pr.cbo
+            order by pr.nome""")
+    List<ProducaoProfissional> producaoPorProfissional(@Param("competencia") Competencia competencia);
 
     /** Atendimentos da competência em uma consulta só (sem N+1). */
     @Query("""
