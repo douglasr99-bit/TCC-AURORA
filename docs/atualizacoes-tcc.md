@@ -1,5 +1,7 @@
 # Atualizações do texto do TCC
 
+> O texto completo das seções 14 a 18, já redigido, está em `docs/secoes-14-a-18.txt`. Nele, o quadro de casos de teste é o Quadro 15, e as referências do Ministério da Saúde de 2026 passam a ser BRASIL, 2026a (layout), 2026b (SIGTAP), 2026c (BDSIA) e 2026d (BPA Magnético).
+
 Este documento reúne o que precisa entrar no texto do TCC (`TCC_Aurora_revisado-add-V1.txt`) depois da implementação. A parte 1 é a tabela da seção 16, pronta para copiar. A parte 2 lista, seção por seção, o que mudar, com o motivo detalhado em `docs/registro-implementacao.md`.
 
 ---
