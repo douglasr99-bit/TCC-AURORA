@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Atendimentos — Aurora</title>
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/atendimentos.css">
+</head>
+<body>
+<header id="barra"></header>
+<div class="estrutura">
+    <nav id="menu"></nav>
+    <main id="conteudo" class="conteudo">
+        <div role="tablist" aria-label="Atendimentos">
+            <button type="button" role="tab" id="aba-lancar" aria-controls="painel-lancar" aria-selected="true">Lançar atendimento</button>
+            <button type="button" role="tab" id="aba-consultar" aria-controls="painel-consultar" aria-selected="false" tabindex="-1">Consultar e corrigir</button>
+        </div>
+
+        <!-- RF07, RF08, RF09 -->
+        <section role="tabpanel" id="painel-lancar" aria-labelledby="aba-lancar">
+            <h1 id="titulo-lancamento">Lançar atendimento</h1>
+            <p class="dica">Os campos do paciente aparecem quando o procedimento exige BPA individualizado.</p>
+
+            <form id="form-atendimento" novalidate>
+                <div class="mensagens" role="status" aria-live="polite" tabindex="-1"></div>
+                <input type="hidden" name="id">
+
+                <div class="linha-tres">
+                    <div class="campo">
+                        <label for="at-data">Data do atendimento <span aria-hidden="true">*</span></label>
+                        <input type="date" id="at-data" name="data" required aria-describedby="dica-competencia">
+                        <span class="dica" id="dica-competencia"></span>
+                    </div>
+                    <div class="campo busca-campo">
+                        <label for="at-profissional">Profissional <span aria-hidden="true">*</span></label>
+                        <input type="text" id="at-profissional" name="buscaProfissional" required aria-describedby="dica-profissional">
+                        <input type="hidden" name="profissionalId">
+                        <span class="dica" id="dica-profissional">Busque por nome ou CNS.</span>
+                    </div>
+                    <div class="campo busca-campo">
+                        <label for="at-procedimento">Procedimento <span aria-hidden="true">*</span></label>
+                        <input type="text" id="at-procedimento" name="buscaProcedimento" required aria-describedby="dica-procedimento">
+                        <input type="hidden" name="procedimentoId">
+                        <span class="dica" id="dica-procedimento">Busque por código ou descrição.</span>
+                    </div>
+                </div>
+
+                <fieldset class="caixa-paciente" id="caixa-paciente" hidden>
+                    <legend>Dados do paciente (BPA-I)</legend>
+                    <div class="linha-tres">
+                        <div class="campo">
+                            <label for="at-cns-paciente">CNS do paciente <span aria-hidden="true">*</span></label>
+                            <div class="com-botao">
+                                <input type="text" id="at-cns-paciente" name="cnsPaciente" inputmode="numeric" maxlength="18" data-digitos>
+                                <button type="button" id="buscar-paciente">Buscar</button>
+                            </div>
+                            <input type="hidden" name="pacienteId">
+                        </div>
+                        <div class="campo">
+                            <label for="at-paciente-nome">Nome</label>
+                            <input type="text" id="at-paciente-nome" readonly placeholder="(preenchido a partir do cadastro)" tabindex="-1">
+                        </div>
+                        <div class="campo">
+                            <label for="at-paciente-nascimento">Data de nascimento</label>
+                            <input type="text" id="at-paciente-nascimento" readonly placeholder="(do cadastro)" tabindex="-1">
+                        </div>
+                    </div>
+                    <div class="linha-tres">
+                        <div class="campo">
+                            <label for="at-carater">Caráter do atendimento <span aria-hidden="true">*</span></label>
+                            <select id="at-carater" name="caraterAtendimento"><option value="">Escolha…</option></select>
+                        </div>
+                    </div>
+                    <p id="link-novo-paciente" hidden>Paciente sem cadastro? <a href="/pacientes.html?novo" id="a-novo-paciente">Cadastrar novo paciente</a></p>
+                </fieldset>
+
+                <div class="linha-tres">
+                    <div class="campo">
+                        <label for="at-quantidade">Quantidade <span aria-hidden="true">*</span></label>
+                        <input type="number" id="at-quantidade" name="quantidade" min="1" max="999999" step="1" value="1" required>
+                    </div>
+                    <div class="campo" id="bloco-idade" hidden>
+                        <label for="at-idade">Idade do paciente <span aria-hidden="true">*</span></label>
+                        <input type="number" id="at-idade" name="idade" min="0" max="130" step="1" disabled>
+                        <span class="dica">Em anos. Exigida no BPA-C.</span>
+                    </div>
+                    <div class="campo" id="bloco-cid" hidden>
+                        <label for="at-cid">CID-10 <span aria-hidden="true">*</span></label>
+                        <input type="text" id="at-cid" name="cid" maxlength="5" data-maiusculas disabled>
+                        <span class="dica">Exigido por este procedimento. Sem ponto (ex.: J069).</span>
+                    </div>
+                </div>
+
+                <p class="dica"><span aria-hidden="true">*</span> Campo obrigatório. Enter salva o lançamento.</p>
+                <div class="botoes">
+                    <button type="submit" class="primario" id="botao-salvar">Salvar lançamento</button>
+                    <button type="button" id="botao-limpar">Limpar</button>
+                </div>
+            </form>
+
+            <section class="painel lista-dia">
+                <h2>Últimos lançamentos de hoje</h2>
+                <div class="mensagens" id="msg-hoje" role="status" aria-live="polite"></div>
+                <table>
+                    <caption class="visualmente-oculto">Lançamentos de hoje</caption>
+                    <thead><tr><th scope="col">Data</th><th scope="col">Profissional</th><th scope="col">Procedimento</th><th scope="col">Paciente</th><th scope="col">Qtd.</th><th scope="col"><span class="visualmente-oculto">Ações</span></th></tr></thead>
+                    <tbody id="lista-hoje"></tbody>
+                </table>
+            </section>
+        </section>
+
+        <!-- RF10 -->
+        <section role="tabpanel" id="painel-consultar" aria-labelledby="aba-consultar" hidden>
+            <h1>Consultar e corrigir lançamentos</h1>
+            <form class="busca" id="form-consulta" role="search" novalidate>
+                <div class="campo" style="max-width:14rem">
+                    <label for="consulta-competencia">Competência (MM/AAAA)</label>
+                    <input type="text" id="consulta-competencia" name="competencia" inputmode="numeric" maxlength="7">
+                </div>
+                <button type="submit">Consultar</button>
+            </form>
+            <div class="mensagens" id="msg-consulta" role="status" aria-live="polite"></div>
+            <p id="resumo-consulta"></p>
+            <table>
+                <caption class="visualmente-oculto">Lançamentos da competência</caption>
+                <thead><tr><th scope="col">Data</th><th scope="col">Profissional</th><th scope="col">Procedimento</th><th scope="col">Paciente</th><th scope="col">Qtd.</th><th scope="col">Lançado por</th><th scope="col"><span class="visualmente-oculto">Ações</span></th></tr></thead>
+                <tbody id="lista-consulta"></tbody>
+            </table>
+        </section>
+    </main>
+</div>
+<script src="/js/api.js"></script>
+<script src="/js/layout.js"></script>
+<script src="/js/busca.js"></script>
+<script src="/js/atendimentos.js"></script>
+</body>
+</html>

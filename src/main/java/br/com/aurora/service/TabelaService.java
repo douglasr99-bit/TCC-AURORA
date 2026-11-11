@@ -18,7 +18,7 @@ import br.com.aurora.exception.NaoEncontradoException;
 /**
  * Tabelas de códigos do SIA usadas na validação e nos formulários. Fontes em
  * docs/registro-implementacao.md: tabelas S_CDN do pacote BDSIA 10/2026 (nacionalidade,
- * etnia, caráter de atendimento) e layout do BPA-I (raça/cor).
+ * etnia, caráter de atendimento), S_CID do mesmo pacote (CID-10 vigentes) e layout do BPA-I (raça/cor).
  */
 @Service
 public class TabelaService {
@@ -27,11 +27,12 @@ public class TabelaService {
     public static final String ETNIA = "etnia";
     public static final String RACA_COR = "raca_cor";
     public static final String CARATER_ATENDIMENTO = "carater_atendimento";
+    public static final String CID10 = "cid10";
 
     private final Map<String, Map<String, String>> tabelas = new LinkedHashMap<>();
 
     public TabelaService() {
-        for (String nome : List.of(NACIONALIDADE, ETNIA, RACA_COR, CARATER_ATENDIMENTO)) {
+        for (String nome : List.of(NACIONALIDADE, ETNIA, RACA_COR, CARATER_ATENDIMENTO, CID10)) {
             tabelas.put(nome, carregar(nome));
         }
     }
