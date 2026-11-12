@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "aurora",
+      "runtimeExecutable": "mvn",
+      "runtimeArgs": ["-q", "-B", "spring-boot:run"],
+      "port": 8080
+    }
+  ]
+}
